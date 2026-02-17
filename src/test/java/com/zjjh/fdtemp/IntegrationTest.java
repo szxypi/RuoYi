@@ -2,6 +2,7 @@ package com.zjjh.fdtemp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zjjh.fdtemp.common.utils.security.TokenBlacklist;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,11 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - 编辑: POST /xxx/edit
  * - 删除: POST /xxx/remove
  */
-@SpringBootTest(classes = FdtempApplication.class)
+@SpringBootTest(classes = FdtempApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Import(TestConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class IntegrationTest {
 
     @Autowired
@@ -45,11 +47,22 @@ public class IntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     // 测试用户凭据
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "admin123";
     private static final String NORMAL_USERNAME = "normal";
     private static final String NORMAL_PASSWORD = "admin123";
+
+    /**
+     * 每个测试前清除 token 黑名单，确保测试独立性
+     */
+    @BeforeEach
+    void setUp() {
+        tokenBlacklist.clear();
+    }
 
     /**
      * 辅助方法：登录并返回token
@@ -62,13 +75,24 @@ public class IntegrationTest {
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginBody)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
         JsonNode root = objectMapper.readTree(responseBody);
-        return root.path("data").path("token").asText();
+
+        // 检查登录是否成功
+        int code = root.path("code").asInt();
+        if (code != 0) {
+            String msg = root.path("msg").asText();
+            throw new AssertionError("登录失败: " + msg + " (用户: " + username + ")");
+        }
+
+        String token = root.path("data").path("token").asText();
+        if (token == null || token.isEmpty()) {
+            throw new AssertionError("登录成功但未返回token (用户: " + username + ")");
+        }
+
+        return token;
     }
 
     // ============================================
@@ -524,7 +548,8 @@ public class IntegrationTest {
         mockMvc.perform(post("/system/user/list")
                 .header("Authorization", "Bearer " + token))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
 
         // 普通用户不能新增用户 (没有 system:user:add 权限)
         // 权限拒绝返回 HTTP 200 + code=500

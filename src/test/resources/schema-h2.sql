@@ -1,7 +1,13 @@
 -- H2 Test Schema for fdtemp
 
+-- 清理旧数据，确保多上下文场景下不会主键冲突
+DROP ALL OBJECTS;
+
+-- 创建 find_in_set 函数别名以兼容 MySQL
+CREATE ALIAS find_in_set AS 'int findInSet(String needle, String haystack) { if (needle == null || haystack == null) return 0; String[] parts = haystack.split(","); for (int i = 0; i < parts.length; i++) { if (needle.equals(parts[i].trim())) return i + 1; } return 0; }';
+
 -- 部门表
-CREATE TABLE sys_dept (
+CREATE TABLE IF NOT EXISTS sys_dept (
     ID VARCHAR(32) PRIMARY KEY,
     parent_id VARCHAR(32) DEFAULT '0',
     ancestors VARCHAR(255) DEFAULT '',
@@ -22,7 +28,7 @@ CREATE TABLE sys_dept (
 );
 
 -- 用户信息表
-CREATE TABLE sys_user (
+CREATE TABLE IF NOT EXISTS sys_user (
     ID VARCHAR(32) PRIMARY KEY,
     dept_id VARCHAR(32) DEFAULT NULL,
     login_name VARCHAR(50) NOT NULL,
@@ -48,7 +54,7 @@ CREATE TABLE sys_user (
 );
 
 -- 角色表
-CREATE TABLE sys_role (
+CREATE TABLE IF NOT EXISTS sys_role (
     ID VARCHAR(32) PRIMARY KEY,
     role_name VARCHAR(50) NOT NULL,
     role_key VARCHAR(100) NOT NULL,
@@ -66,7 +72,7 @@ CREATE TABLE sys_role (
 );
 
 -- 菜单权限表
-CREATE TABLE sys_menu (
+CREATE TABLE IF NOT EXISTS sys_menu (
     ID VARCHAR(32) PRIMARY KEY,
     menu_name VARCHAR(50) NOT NULL,
     parent_id VARCHAR(32) DEFAULT '0',
@@ -88,28 +94,28 @@ CREATE TABLE sys_menu (
 );
 
 -- 用户和角色关联表
-CREATE TABLE sys_user_role (
+CREATE TABLE IF NOT EXISTS sys_user_role (
     user_id VARCHAR(32) NOT NULL,
     role_id VARCHAR(32) NOT NULL,
     PRIMARY KEY(user_id, role_id)
 );
 
 -- 角色和菜单关联表
-CREATE TABLE sys_role_menu (
+CREATE TABLE IF NOT EXISTS sys_role_menu (
     role_id VARCHAR(32) NOT NULL,
     menu_id VARCHAR(32) NOT NULL,
     PRIMARY KEY(role_id, menu_id)
 );
 
 -- 角色和部门关联表
-CREATE TABLE sys_role_dept (
+CREATE TABLE IF NOT EXISTS sys_role_dept (
     role_id VARCHAR(32) NOT NULL,
     dept_id VARCHAR(32) NOT NULL,
     PRIMARY KEY(role_id, dept_id)
 );
 
 -- 岗位信息表
-CREATE TABLE sys_post (
+CREATE TABLE IF NOT EXISTS sys_post (
     ID VARCHAR(32) PRIMARY KEY,
     post_code VARCHAR(64) NOT NULL,
     post_name VARCHAR(50) NOT NULL,
@@ -126,14 +132,14 @@ CREATE TABLE sys_post (
 );
 
 -- 用户与岗位关联表
-CREATE TABLE sys_user_post (
+CREATE TABLE IF NOT EXISTS sys_user_post (
     user_id VARCHAR(32) NOT NULL,
     post_id VARCHAR(32) NOT NULL,
     PRIMARY KEY (user_id, post_id)
 );
 
 -- 字典类型表
-CREATE TABLE sys_dict_type (
+CREATE TABLE IF NOT EXISTS sys_dict_type (
     ID VARCHAR(32) PRIMARY KEY,
     dict_name VARCHAR(100) DEFAULT '',
     dict_type VARCHAR(100) DEFAULT '',
@@ -149,7 +155,7 @@ CREATE TABLE sys_dict_type (
 );
 
 -- 字典数据表
-CREATE TABLE sys_dict_data (
+CREATE TABLE IF NOT EXISTS sys_dict_data (
     ID VARCHAR(32) PRIMARY KEY,
     dict_sort INT DEFAULT 0,
     dict_label VARCHAR(100) DEFAULT '',
@@ -170,7 +176,7 @@ CREATE TABLE sys_dict_data (
 );
 
 -- 参数配置表
-CREATE TABLE sys_config (
+CREATE TABLE IF NOT EXISTS sys_config (
     ID VARCHAR(32) PRIMARY KEY,
     config_name VARCHAR(100) DEFAULT '',
     config_key VARCHAR(100) DEFAULT '',
@@ -187,7 +193,7 @@ CREATE TABLE sys_config (
 );
 
 -- 系统访问记录
-CREATE TABLE sys_logininfor (
+CREATE TABLE IF NOT EXISTS sys_logininfor (
     ID VARCHAR(32) PRIMARY KEY,
     login_name VARCHAR(50) DEFAULT '',
     ipaddr VARCHAR(128) DEFAULT '',
@@ -200,7 +206,7 @@ CREATE TABLE sys_logininfor (
 );
 
 -- 操作日志记录
-CREATE TABLE sys_oper_log (
+CREATE TABLE IF NOT EXISTS sys_oper_log (
     ID VARCHAR(32) PRIMARY KEY,
     title VARCHAR(50) DEFAULT '',
     business_type INT DEFAULT 0,
@@ -216,11 +222,12 @@ CREATE TABLE sys_oper_log (
     json_result VARCHAR(2000) DEFAULT '',
     status INT DEFAULT 0,
     error_msg VARCHAR(2000) DEFAULT '',
+    cost_time BIGINT DEFAULT 0,
     oper_time DATETIME
 );
 
 -- 通知公告表
-CREATE TABLE sys_notice (
+CREATE TABLE IF NOT EXISTS sys_notice (
     ID VARCHAR(32) PRIMARY KEY,
     notice_title VARCHAR(50) NOT NULL,
     notice_type CHAR(1) NOT NULL,
@@ -236,7 +243,7 @@ CREATE TABLE sys_notice (
 );
 
 -- 定时任务调度表
-CREATE TABLE sys_job (
+CREATE TABLE IF NOT EXISTS sys_job (
     ID VARCHAR(32) PRIMARY KEY,
     job_name VARCHAR(64) DEFAULT '',
     job_group VARCHAR(64) DEFAULT 'DEFAULT',
@@ -256,7 +263,7 @@ CREATE TABLE sys_job (
 );
 
 -- 定时任务调度日志表
-CREATE TABLE sys_job_log (
+CREATE TABLE IF NOT EXISTS sys_job_log (
     ID VARCHAR(32) PRIMARY KEY,
     job_name VARCHAR(64) DEFAULT '',
     job_group VARCHAR(64) DEFAULT 'DEFAULT',
@@ -268,7 +275,7 @@ CREATE TABLE sys_job_log (
 );
 
 -- 代码生成业务表
-CREATE TABLE gen_table (
+CREATE TABLE IF NOT EXISTS gen_table (
     ID VARCHAR(32) PRIMARY KEY,
     table_name VARCHAR(200) DEFAULT '',
     table_comment VARCHAR(500) DEFAULT '',
@@ -301,7 +308,7 @@ CREATE TABLE gen_table (
 );
 
 -- 代码生成业务表字段
-CREATE TABLE gen_table_column (
+CREATE TABLE IF NOT EXISTS gen_table_column (
     ID VARCHAR(32) PRIMARY KEY,
     table_id VARCHAR(32) DEFAULT NULL,
     column_name VARCHAR(200) DEFAULT NULL,
@@ -329,7 +336,7 @@ CREATE TABLE gen_table_column (
 );
 
 -- Quartz相关表 (简化版)
-CREATE TABLE qrtz_job_details (
+CREATE TABLE IF NOT EXISTS qrtz_job_details (
     sched_name VARCHAR(120) NOT NULL,
     job_name VARCHAR(200) NOT NULL,
     job_group VARCHAR(200) NOT NULL,
@@ -343,7 +350,7 @@ CREATE TABLE qrtz_job_details (
     PRIMARY KEY (sched_name, job_name, job_group)
 );
 
-CREATE TABLE qrtz_triggers (
+CREATE TABLE IF NOT EXISTS qrtz_triggers (
     sched_name VARCHAR(120) NOT NULL,
     trigger_name VARCHAR(200) NOT NULL,
     trigger_group VARCHAR(200) NOT NULL,
@@ -365,7 +372,7 @@ CREATE TABLE qrtz_triggers (
         REFERENCES qrtz_job_details(sched_name, job_name, job_group)
 );
 
-CREATE TABLE qrtz_cron_triggers (
+CREATE TABLE IF NOT EXISTS qrtz_cron_triggers (
     sched_name VARCHAR(120) NOT NULL,
     trigger_name VARCHAR(200) NOT NULL,
     trigger_group VARCHAR(200) NOT NULL,

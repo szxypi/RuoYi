@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sort != null">#{sort},</if>
 			<if test="createUser != null and createUser != ''">#{createUser},</if>
 			<if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
-			sysdate()
+			CURRENT_TIMESTAMP
          )
     </insert>
 
@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             dict_type = #{dictType},
             sort = #{sort},
             UPDATE_USER = #{updateUser},
-            UPDATE_TIME = sysdate()
+            UPDATE_TIME = CURRENT_TIMESTAMP
         </set>
         where ID = #{id}
     </update>

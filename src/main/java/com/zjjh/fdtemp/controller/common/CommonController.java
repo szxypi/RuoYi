@@ -57,7 +57,7 @@ public class CommonController
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUtils.setAttachmentResponseHeader(response, realFileName);
             FileUtils.writeBytes(filePath, response.getOutputStream());
-            if (delete)
+            if (Boolean.TRUE.equals(delete))
             {
                 FileUtils.deleteFile(filePath);
             }

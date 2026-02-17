@@ -45,4 +45,11 @@ public class TokenBlacklist {
         long now = System.currentTimeMillis();
         blacklist.entrySet().removeIf(entry -> entry.getValue() < now);
     }
+
+    /**
+     * 清除所有黑名单（用于测试）
+     */
+    public void clear() {
+        blacklist.clear();
+    }
 }

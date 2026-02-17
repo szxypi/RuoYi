@@ -24,6 +24,10 @@ public class AddressUtils
 
     public static String getRealAddressByIP(String ip)
     {
+        if (IpUtils.isUnknown(ip))
+        {
+            return UNKNOWN;
+        }
         // 内网不查询
         if (IpUtils.internalIp(ip))
         {
@@ -46,7 +50,7 @@ public class AddressUtils
             }
             catch (Exception e)
             {
-                log.error("获取地理位置异常 {}", e);
+                log.error("获取地理位置异常, ip={}", ip, e);
             }
         }
         return UNKNOWN;

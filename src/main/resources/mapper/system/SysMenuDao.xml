@@ -156,7 +156,7 @@
 			<if test="attr1 != null">ATTR1 = #{attr1},</if>
 			<if test="updateUser != null and updateUser != ''">UPDATE_USER = #{updateUser},</if>
 			<if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME = #{updateUserNickname},</if>
-			UPDATE_TIME = sysdate()
+			UPDATE_TIME = CURRENT_TIMESTAMP
 		</set>
 		where ID = #{id}
 	</update>
@@ -193,7 +193,7 @@
 		<if test="attr1 != null and attr1 != ''">#{attr1},</if>
 		<if test="createUser != null and createUser != ''">#{createUser},</if>
 		<if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
-		sysdate()
+		CURRENT_TIMESTAMP
 		)
 	</insert>
 

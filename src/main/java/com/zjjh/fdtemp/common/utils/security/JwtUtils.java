@@ -74,6 +74,15 @@ public class JwtUtils {
         return createToken(claims, userDetails.getUsername(), refreshExpiration);
     }
 
+    public Boolean isRefreshToken(String token) {
+        try {
+            String tokenType = extractClaim(token, claims -> claims.get("type", String.class));
+            return "refresh".equals(tokenType);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private String createToken(Map<String, Object> claims, String subject, long expirationTime) {
         return Jwts.builder()
                 .claims(claims)

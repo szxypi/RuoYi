@@ -119,7 +119,7 @@ public class IpUtils
      */
     public static byte[] textToNumericFormatV4(String text)
     {
-        if (text.length() == 0)
+        if (StringUtils.isEmpty(text))
         {
             return null;
         }

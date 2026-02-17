@@ -78,7 +78,7 @@ public class AuthController {
         if (refreshToken == null || refreshToken.isEmpty()) {
             return AjaxResult.error("刷新Token不能为空");
         }
-        if (jwtUtils.validateToken(refreshToken)) {
+        if (jwtUtils.validateToken(refreshToken) && jwtUtils.isRefreshToken(refreshToken)) {
             String username = jwtUtils.extractUsername(refreshToken);
             // 从 refresh token 重新加载用户信息，而不是从 SecurityContextHolder 获取
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);

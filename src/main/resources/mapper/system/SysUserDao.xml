@@ -171,12 +171,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		update sys_user set avatar = #{avatar} where ID = #{id}
 	</update>
 
-	<update id="resetUserPwd" parameterType="SysUser">
- 		update sys_user SET pwd_update_date = sysdate(), password = #{password}, UPDATE_TIME = sysdate() where ID = #{id}
+	<update id="resetUserPwd">
+ 		update sys_user SET pwd_update_date = CURRENT_TIMESTAMP, password = #{password}, UPDATE_TIME = CURRENT_TIMESTAMP where ID = #{userId}
 	</update>
 
 	<update id="updateUserStatus" parameterType="SysUser">
- 		update sys_user SET status = #{status}, UPDATE_TIME = sysdate() where ID = #{id}
+ 		update sys_user SET status = #{status}, UPDATE_TIME = CURRENT_TIMESTAMP where ID = #{id}
 	</update>
 
   	<update id="updateLoginInfo" parameterType="SysUser">
@@ -201,7 +201,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="updateUser != null and updateUser != ''">UPDATE_USER = #{updateUser},</if>
  			<if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME = #{updateUserNickname},</if>
  			<if test="attr1 != null">ATTR1 = #{attr1},</if>
- 			UPDATE_TIME = sysdate()
+ 			UPDATE_TIME = CURRENT_TIMESTAMP
  		</set>
  		where ID = #{id}
 	</update>
@@ -240,7 +240,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="createUser != null and createUser != ''">#{createUser},</if>
  			<if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
  			<if test="attr1 != null and attr1 != ''">#{attr1},</if>
- 			sysdate()
+ 			CURRENT_TIMESTAMP
  		)
 	</insert>
 
