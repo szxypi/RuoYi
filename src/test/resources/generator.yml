@@ -1,0 +1,6 @@
+# 代码生成配置 (测试环境)
+author: fdtemp
+packageName: com.zjjh.fdtemp
+autoRemovePre: true
+tablePrefix: sys_,gen_
+allowOverwrite: false

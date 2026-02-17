@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjjh.fdtemp.dao.SysDictDataDao">
+
+	<resultMap type="SysDictData" id="SysDictDataResult">
+		<id     property="id"         column="ID"          />
+		<result property="dictSort"   column="dict_sort"   />
+		<result property="dictLabel"  column="dict_label"  />
+		<result property="dictValue"  column="dict_value"  />
+		<result property="dictType"   column="dict_type"   />
+		<result property="cssClass"   column="css_class"   />
+		<result property="listClass"  column="list_class"  />
+		<result property="isDefault"  column="is_default"  />
+		<result property="status"     column="status"      />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createUserNickname" column="CREATE_USER_NICKNAME" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateUserNickname" column="UPDATE_USER_NICKNAME" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+
+	<sql id="selectDictDataVo">
+        select ID, dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status, CREATE_USER, CREATE_TIME, ATTR1
+		from sys_dict_data
+    </sql>
+
+	<select id="selectDictDataList" parameterType="SysDictData" resultMap="SysDictDataResult">
+	    <include refid="selectDictDataVo"/>
+		<where>
+		    <if test="dictType != null and dictType != ''">
+				AND dict_type = #{dictType}
+			</if>
+			<if test="dictLabel != null and dictLabel != ''">
+				AND dict_label like concat('%', #{dictLabel}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectDictDataByType" parameterType="String" resultMap="SysDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where status = '0' and dict_type = #{dictType} order by dict_sort asc
+	</select>
+
+	<select id="selectDictLabel" resultType="String">
+		select dict_label from sys_dict_data
+		where dict_type = #{dictType} and dict_value = #{dictValue}
+	</select>
+
+	<select id="selectDictDataById" parameterType="String" resultMap="SysDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where ID = #{id}
+	</select>
+
+	<select id="countDictDataByType" resultType="Integer">
+	    select count(1) from sys_dict_data where dict_type=#{dictType}
+	</select>
+
+	<delete id="deleteDictDataById" parameterType="String">
+ 		delete from sys_dict_data where ID = #{id}
+ 	</delete>
+
+ 	<delete id="deleteDictDataByIds" parameterType="String">
+ 		delete from sys_dict_data where ID in
+ 		<foreach collection="array" item="id" open="(" separator="," close=")">
+ 			#{id}
+        </foreach>
+ 	</delete>
+
+	<update id="updateDictData" parameterType="SysDictData">
+ 		update sys_dict_data
+ 		<set>
+ 			<if test="dictSort != null">dict_sort = #{dictSort},</if>
+ 			<if test="dictLabel != null and dictLabel != ''">dict_label = #{dictLabel},</if>
+ 			<if test="dictValue != null and dictValue != ''">dict_value = #{dictValue},</if>
+ 			<if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+ 			<if test="cssClass != null">css_class = #{cssClass},</if>
+ 			<if test="listClass != null">list_class = #{listClass},</if>
+ 			<if test="isDefault != null and isDefault != ''">is_default = #{isDefault},</if>
+ 			<if test="status != null">status = #{status},</if>
+ 			<if test="attr1 != null">ATTR1 = #{attr1},</if>
+ 			<if test="updateUser != null and updateUser != ''">UPDATE_USER = #{updateUser},</if>
+ 			<if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME = #{updateUserNickname},</if>
+ 			UPDATE_TIME = sysdate()
+ 		</set>
+ 		where ID = #{id}
+	</update>
+
+	<update id="updateDictDataType" parameterType="String">
+ 		update sys_dict_data set dict_type = #{newDictType} where dict_type = #{oldDictType}
+	</update>
+
+ 	<insert id="insertDictData" parameterType="SysDictData">
+ 		insert into sys_dict_data(
+ 			<if test="id != null and id != ''">ID,</if>
+ 			<if test="dictSort != null">dict_sort,</if>
+ 			<if test="dictLabel != null and dictLabel != ''">dict_label,</if>
+ 			<if test="dictValue != null and dictValue != ''">dict_value,</if>
+ 			<if test="dictType != null and dictType != ''">dict_type,</if>
+ 			<if test="cssClass != null and cssClass != ''">css_class,</if>
+ 			<if test="listClass != null and listClass != ''">list_class,</if>
+ 			<if test="isDefault != null and isDefault != ''">is_default,</if>
+ 			<if test="status != null">status,</if>
+ 			<if test="attr1 != null and attr1 != ''">ATTR1,</if>
+ 			<if test="createUser != null and createUser != ''">CREATE_USER,</if>
+ 			<if test="createUserNickname != null and createUserNickname != ''">CREATE_USER_NICKNAME,</if>
+ 			CREATE_TIME
+ 		)values(
+ 			<if test="id != null and id != ''">#{id},</if>
+ 		    <if test="dictSort != null">#{dictSort},</if>
+ 		    <if test="dictLabel != null and dictLabel != ''">#{dictLabel},</if>
+ 			<if test="dictValue != null and dictValue != ''">#{dictValue},</if>
+ 			<if test="dictType != null and dictType != ''">#{dictType},</if>
+ 			<if test="cssClass != null and cssClass != ''">#{cssClass},</if>
+ 			<if test="listClass != null and listClass != ''">#{listClass},</if>
+ 			<if test="isDefault != null and isDefault != ''">#{isDefault},</if>
+ 			<if test="status != null">#{status},</if>
+ 			<if test="attr1 != null and attr1 != ''">#{attr1},</if>
+ 			<if test="createUser != null and createUser != ''">#{createUser},</if>
+ 			<if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
+ 			sysdate()
+ 		)
+	</insert>
+
+</mapper>
