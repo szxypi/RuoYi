@@ -1,46 +1,103 @@
 ######################################################################
-# Build Tools
-
-.gradle
-/build/
-!gradle/wrapper/gradle-wrapper.jar
-
+# Maven
+######################################################################
 target/
 !.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
 ######################################################################
 # IDE
+######################################################################
 
-### STS ###
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### Eclipse / STS ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
+.sts4-cache/
+bin/
+tmp/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### JRebel ###
-rebel.xml
 ### NetBeans ###
-nbproject/private/
-build/*
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+######################################################################
+# Spring Boot
+######################################################################
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+######################################################################
+# Logs
+######################################################################
+logs/
+*.log
+log/
+
+######################################################################
+# OS
+######################################################################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 ######################################################################
 # Others
-*.log
-*.xml.versionsBackup
+######################################################################
 *.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+*.xml.versionsBackup
+*~
 
-!*/build/*.java
-!*/build/*.html
-!*/build/*.xml
+# Sensitive files
+*.env
+*.env.local
+*.env.*.local
+application-local.yml
+application-local.properties
+
+# Hotswap
+rebel.xml
+.hotswap/
+
+# Package Files
+*.class
+*.pyc
+*.pid
+*.seed
