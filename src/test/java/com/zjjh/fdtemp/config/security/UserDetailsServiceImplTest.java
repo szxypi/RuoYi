@@ -1,6 +1,7 @@
 package com.zjjh.fdtemp.config.security;
 
 import com.zjjh.fdtemp.beans.LoginUser;
+import com.zjjh.fdtemp.beans.entity.SysRole;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.exception.ServiceException;
 import com.zjjh.fdtemp.enums.UserStatus;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,6 +66,9 @@ class UserDetailsServiceImplTest {
         adminUser.setPassword("$2a$10$encodedPassword");
         adminUser.setStatus("0");
         adminUser.setYn("0");
+        SysRole adminRole = new SysRole();
+        adminRole.setRoleKey("admin");
+        adminUser.setRoles(List.of(adminRole));
 
         // 创建已删除用户
         deletedUser = new SysUser();

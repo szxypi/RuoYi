@@ -48,6 +48,9 @@ public class SysDeptServiceImplTest {
         adminUser.setLoginName("admin");
         adminUser.setUserName("超级管理员");
         adminUser.setStatus("0");
+        SysRole adminRole = new SysRole();
+        adminRole.setRoleKey("admin");
+        adminUser.setRoles(List.of(adminRole));
 
         Set<String> permissions = new HashSet<>();
         permissions.add("*:*:*");

@@ -93,6 +93,17 @@ jwt:
   # token前缀
   prefix: "Bearer "
 
+# 安全配置
+security:
+  cors:
+    # 企业环境请按实际前端域名配置，多个用逗号分隔
+    allowed-origin-patterns: http://localhost:*,http://127.0.0.1:*
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: Authorization,Content-Type,X-Requested-With
+  token-blacklist:
+    # memory: 单机内存模式; db: 数据库存储（多实例建议）
+    mode: db
+
 # Springdoc配置
 springdoc:
   api-docs:

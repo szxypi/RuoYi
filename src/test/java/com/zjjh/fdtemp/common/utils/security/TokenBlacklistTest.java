@@ -99,9 +99,7 @@ class TokenBlacklistTest {
     @Test
     @DisplayName("isBlacklisted - null token返回false")
     void testIsBlacklisted_NullToken() {
-        // ConcurrentHashMap不允许null key，会抛出NullPointerException
-        // 这是预期的行为
-        assertThrows(NullPointerException.class, () -> tokenBlacklist.isBlacklisted(null));
+        assertFalse(tokenBlacklist.isBlacklisted(null));
     }
 
     @Test

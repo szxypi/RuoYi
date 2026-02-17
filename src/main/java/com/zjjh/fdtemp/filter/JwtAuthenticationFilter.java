@@ -43,10 +43,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(tokenHeader);
         if (StringUtils.isNotEmpty(authHeader) && authHeader.startsWith(tokenPrefix)) {
             String jwt = authHeader.substring(tokenPrefix.length()).trim();
+            if (StringUtils.isEmpty(jwt)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             try {
                 // 检查 token 是否在黑名单中
                 if (tokenBlacklist.isBlacklisted(jwt)) {
                     logger.warn("Token 已被加入黑名单");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                // refresh token 不能用于访问受保护资源
+                if (jwtUtils.isRefreshToken(jwt)) {
+                    logger.warn("Refresh token 不能用于访问受保护资源");
                     filterChain.doFilter(request, response);
                     return;
                 }

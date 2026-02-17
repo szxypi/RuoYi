@@ -52,7 +52,7 @@ public class GlobalExceptionHandler
     {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',不支持'{}'请求", requestURI, e.getMethod());
-        return AjaxResult.error(e.getMessage());
+        return AjaxResult.error("请求方法不支持");
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler
     {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常.", requestURI, e);
-        return AjaxResult.error(e.getMessage());
+        return AjaxResult.error("系统繁忙，请稍后重试");
     }
 
     @ExceptionHandler(Exception.class)
@@ -68,7 +68,7 @@ public class GlobalExceptionHandler
     {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生系统异常.", requestURI, e);
-        return AjaxResult.error(e.getMessage());
+        return AjaxResult.error("系统异常，请联系管理员");
     }
 
     @ExceptionHandler(ServiceException.class)

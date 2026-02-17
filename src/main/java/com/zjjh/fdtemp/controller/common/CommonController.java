@@ -90,7 +90,8 @@ public class CommonController
         }
         catch (Exception e)
         {
-            return AjaxResult.error(e.getMessage());
+            log.error("上传文件失败", e);
+            return AjaxResult.error("上传文件失败");
         }
     }
 
@@ -127,7 +128,8 @@ public class CommonController
         }
         catch (Exception e)
         {
-            return AjaxResult.error(e.getMessage());
+            log.error("上传文件失败", e);
+            return AjaxResult.error("上传文件失败");
         }
     }
 

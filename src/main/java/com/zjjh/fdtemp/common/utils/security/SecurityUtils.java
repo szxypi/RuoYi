@@ -88,7 +88,10 @@ public class SecurityUtils {
     }
 
     public static boolean isAdminUser(SysUser user) {
-        return user != null && "admin".equals(user.getLoginName());
+        if (user == null || user.getRoles() == null) {
+            return false;
+        }
+        return user.getRoles().stream().anyMatch(role -> role != null && role.isAdmin());
     }
 
     public static String getIp() {

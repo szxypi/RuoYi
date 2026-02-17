@@ -226,6 +226,14 @@ CREATE TABLE IF NOT EXISTS sys_oper_log (
     oper_time DATETIME
 );
 
+-- JWT 黑名单（支持多实例共享吊销状态）
+CREATE TABLE IF NOT EXISTS sys_token_blacklist (
+    token_hash VARCHAR(64) PRIMARY KEY,
+    expiration_time DATETIME NOT NULL,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_sys_token_blacklist_expiration ON sys_token_blacklist(expiration_time);
+
 -- 通知公告表
 CREATE TABLE IF NOT EXISTS sys_notice (
     ID VARCHAR(32) PRIMARY KEY,

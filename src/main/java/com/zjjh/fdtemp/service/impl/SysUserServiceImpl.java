@@ -23,7 +23,6 @@ import com.zjjh.fdtemp.common.utils.security.SecurityUtils;
 import com.zjjh.fdtemp.common.utils.StringUtils;
 import com.zjjh.fdtemp.common.utils.bean.BeanValidators;
 import com.zjjh.fdtemp.common.utils.html.EscapeUtil;
-import com.zjjh.fdtemp.common.utils.security.Md5Utils;
 import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
 import com.zjjh.fdtemp.beans.entity.SysPost;
 import com.zjjh.fdtemp.beans.entity.SysUserPost;
@@ -441,7 +440,12 @@ public class SysUserServiceImpl implements SysUserService
     @Override
     public void checkUserAllowed(SysUser user)
     {
-        if (StringUtils.isNotNull(user.getId()) && user.isAdmin())
+        if (StringUtils.isNull(user) || StringUtils.isEmpty(user.getId()))
+        {
+            return;
+        }
+        SysUser dbUser = userMapper.selectUserById(user.getId());
+        if (dbUser != null && dbUser.isAdmin())
         {
             throw new ServiceException("不允许操作超级管理员用户");
         }
@@ -531,7 +535,7 @@ public class SysUserServiceImpl implements SysUserService
                     BeanValidators.validateWithException(validator, user);
                     deptService.checkDeptDataScope(user.getDeptId());
                     String password = configService.selectConfigByKey("sys.user.initPassword");
-                    user.setPassword(Md5Utils.hash(user.getLoginName() + password));
+                    user.setPassword(SecurityUtils.encryptPassword(password));
                     user.setCreateUser(operName);
                     userMapper.insertUser(user);
                     successNum++;

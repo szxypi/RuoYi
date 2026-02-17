@@ -720,3 +720,15 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
+
+
+-- ----------------------------
+-- 21、JWT黑名单
+-- ----------------------------
+create table if not exists sys_token_blacklist (
+  token_hash        varchar(64)     not null                   comment 'Token哈希(SHA-256)',
+  expiration_time   datetime        not null                   comment 'Token过期时间',
+  create_time       datetime        default current_timestamp  comment '创建时间',
+  primary key (token_hash),
+  key idx_sys_token_blacklist_expiration (expiration_time)
+) engine=innodb comment = 'JWT黑名单';

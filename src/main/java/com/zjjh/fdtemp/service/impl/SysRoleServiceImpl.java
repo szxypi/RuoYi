@@ -314,7 +314,12 @@ public class SysRoleServiceImpl implements SysRoleService
     @Override
     public void checkRoleAllowed(SysRole role)
     {
-        if (StringUtils.isNotNull(role.getId()) && role.isAdmin())
+        if (StringUtils.isNull(role) || StringUtils.isEmpty(role.getId()))
+        {
+            return;
+        }
+        SysRole dbRole = roleMapper.selectRoleById(role.getId());
+        if (dbRole != null && dbRole.isAdmin())
         {
             throw new ServiceException("不允许操作超级管理员角色");
         }

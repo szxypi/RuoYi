@@ -3,6 +3,7 @@ package com.zjjh.fdtemp.controller.auth;
 import com.zjjh.fdtemp.beans.LoginUser;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.core.domain.AjaxResult;
+import com.zjjh.fdtemp.common.utils.StringUtils;
 import com.zjjh.fdtemp.common.utils.security.JwtUtils;
 import com.zjjh.fdtemp.common.utils.security.SecurityUtils;
 import com.zjjh.fdtemp.common.utils.security.TokenBlacklist;
@@ -63,11 +64,11 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public AjaxResult logout(HttpServletRequest request) {
-        String token = jwtUtils.extractTokenFromRequest(request);
-        if (token != null && jwtUtils.validateToken(token)) {
-            long expiration = jwtUtils.extractExpiration(token).getTime();
-            tokenBlacklist.addToBlacklist(token, expiration);
+    public AjaxResult logout(HttpServletRequest request, @RequestBody(required = false) Map<String, String> body) {
+        String accessToken = jwtUtils.extractTokenFromRequest(request);
+        blacklistTokenIfValid(accessToken, false);
+        if (body != null) {
+            blacklistTokenIfValid(body.get("refreshToken"), true);
         }
         return AjaxResult.success("退出成功");
     }
@@ -75,17 +76,22 @@ public class AuthController {
     @PostMapping("/refresh")
     public AjaxResult refresh(@RequestBody Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
-        if (refreshToken == null || refreshToken.isEmpty()) {
+        if (StringUtils.isEmpty(refreshToken)) {
             return AjaxResult.error("刷新Token不能为空");
+        }
+        if (tokenBlacklist.isBlacklisted(refreshToken)) {
+            return AjaxResult.error("刷新Token无效");
         }
         if (jwtUtils.validateToken(refreshToken) && jwtUtils.isRefreshToken(refreshToken)) {
             String username = jwtUtils.extractUsername(refreshToken);
-            // 从 refresh token 重新加载用户信息，而不是从 SecurityContextHolder 获取
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (userDetails instanceof LoginUser loginUser) {
+                tokenBlacklist.addToBlacklist(refreshToken, jwtUtils.extractExpiration(refreshToken).getTime());
                 String newToken = jwtUtils.generateToken(loginUser);
+                String newRefreshToken = jwtUtils.generateRefreshToken(loginUser);
                 Map<String, Object> data = new HashMap<>();
                 data.put("token", newToken);
+                data.put("refreshToken", newRefreshToken);
                 return AjaxResult.success("刷新成功", data);
             }
         }
@@ -103,5 +109,15 @@ public class AuthController {
         data.put("roles", roles);
         data.put("permissions", permissions);
         return AjaxResult.success(data);
+    }
+
+    private void blacklistTokenIfValid(String token, boolean requireRefreshToken) {
+        if (StringUtils.isEmpty(token) || !jwtUtils.validateToken(token)) {
+            return;
+        }
+        if (requireRefreshToken && !jwtUtils.isRefreshToken(token)) {
+            return;
+        }
+        tokenBlacklist.addToBlacklist(token, jwtUtils.extractExpiration(token).getTime());
     }
 }

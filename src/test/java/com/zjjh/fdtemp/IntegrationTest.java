@@ -68,6 +68,13 @@ public class IntegrationTest {
      * 辅助方法：登录并返回token
      */
     private String login(String username, String password) throws Exception {
+        return loginAndGetTokens(username, password).get("token");
+    }
+
+    /**
+     * 辅助方法：登录并返回 access/refresh token
+     */
+    private Map<String, String> loginAndGetTokens(String username, String password) throws Exception {
         Map<String, String> loginBody = new HashMap<>();
         loginBody.put("username", username);
         loginBody.put("password", password);
@@ -88,11 +95,18 @@ public class IntegrationTest {
         }
 
         String token = root.path("data").path("token").asText();
+        String refreshToken = root.path("data").path("refreshToken").asText();
         if (token == null || token.isEmpty()) {
             throw new AssertionError("登录成功但未返回token (用户: " + username + ")");
         }
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new AssertionError("登录成功但未返回refreshToken (用户: " + username + ")");
+        }
 
-        return token;
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("token", token);
+        tokens.put("refreshToken", refreshToken);
+        return tokens;
     }
 
     // ============================================
@@ -177,6 +191,60 @@ public class IntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("1.6 refreshToken 刷新成功")
+    void testRefresh() throws Exception {
+        Map<String, String> tokens = loginAndGetTokens(ADMIN_USERNAME, ADMIN_PASSWORD);
+        Map<String, String> refreshBody = new HashMap<>();
+        refreshBody.put("refreshToken", tokens.get("refreshToken"));
+
+        mockMvc.perform(post("/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(refreshBody)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.token").isNotEmpty())
+                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("1.7 logout 后 refreshToken 失效")
+    void testLogoutInvalidatesRefreshToken() throws Exception {
+        Map<String, String> tokens = loginAndGetTokens(ADMIN_USERNAME, ADMIN_PASSWORD);
+        Map<String, String> logoutBody = new HashMap<>();
+        logoutBody.put("refreshToken", tokens.get("refreshToken"));
+
+        mockMvc.perform(post("/auth/logout")
+                .header("Authorization", "Bearer " + tokens.get("token"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(logoutBody)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
+
+        mockMvc.perform(post("/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(logoutBody)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(500));
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("1.8 refreshToken 不能访问受保护接口")
+    void testRefreshTokenCannotAccessProtectedApi() throws Exception {
+        Map<String, String> tokens = loginAndGetTokens(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        mockMvc.perform(post("/system/user/list")
+                .header("Authorization", "Bearer " + tokens.get("refreshToken")))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
     // ============================================

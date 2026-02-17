@@ -88,6 +88,7 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_ValidToken() throws ServletException, IOException {
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
         when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn("testuser");
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testLoginUser);
         when(jwtUtils.validateToken(VALID_TOKEN, testLoginUser)).thenReturn(true);
@@ -151,6 +152,7 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_TokenParseError() throws ServletException, IOException {
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + "invalid.token");
         when(tokenBlacklist.isBlacklisted("invalid.token")).thenReturn(false);
+        when(jwtUtils.isRefreshToken("invalid.token")).thenReturn(false);
         when(jwtUtils.extractUsername("invalid.token")).thenThrow(new RuntimeException("Invalid token"));
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -164,6 +166,7 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_EmptyUsername() throws ServletException, IOException {
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
         when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn("");
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -178,6 +181,7 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_NullUsername() throws ServletException, IOException {
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
         when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn(null);
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -191,6 +195,7 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_TokenValidationFailed() throws ServletException, IOException {
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
         when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn("testuser");
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testLoginUser);
         when(jwtUtils.validateToken(VALID_TOKEN, testLoginUser)).thenReturn(false);
@@ -212,6 +217,7 @@ class JwtAuthenticationFilterTest {
 
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
         when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn("testuser");
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
@@ -226,6 +232,7 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_UserNotFound() throws ServletException, IOException {
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
         when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn("nonexistent");
         when(userDetailsService.loadUserByUsername("nonexistent"))
             .thenThrow(new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found"));
@@ -244,8 +251,8 @@ class JwtAuthenticationFilterTest {
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         verify(filterChain).doFilter(request, response);
-        // 空字符串的token应该被处理
-        verify(tokenBlacklist).isBlacklisted("");
+        verify(tokenBlacklist, never()).isBlacklisted(anyString());
+        verify(jwtUtils, never()).extractUsername(anyString());
     }
 
     @Test
@@ -254,6 +261,7 @@ class JwtAuthenticationFilterTest {
         String tokenWithSpaces = "  token  ";
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + tokenWithSpaces);
         when(tokenBlacklist.isBlacklisted("token")).thenReturn(false);
+        when(jwtUtils.isRefreshToken("token")).thenReturn(false);
         when(jwtUtils.extractUsername("token")).thenReturn("testuser");
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testLoginUser);
         when(jwtUtils.validateToken("token", testLoginUser)).thenReturn(true);
@@ -263,5 +271,20 @@ class JwtAuthenticationFilterTest {
         verify(filterChain).doFilter(request, response);
         // trim()后的token应该被使用
         verify(tokenBlacklist).isBlacklisted("token");
+    }
+
+    @Test
+    @DisplayName("doFilterInternal - refresh token 不允许用于接口访问")
+    void testDoFilterInternal_RefreshTokenRejected() throws ServletException, IOException {
+        when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
+        when(tokenBlacklist.isBlacklisted(VALID_TOKEN)).thenReturn(false);
+        when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(true);
+
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        verify(filterChain).doFilter(request, response);
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(jwtUtils, never()).extractUsername(anyString());
+        verify(userDetailsService, never()).loadUserByUsername(anyString());
     }
 }

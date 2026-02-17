@@ -167,7 +167,7 @@ class AuthControllerTest {
         Date expiration = new Date(System.currentTimeMillis() + 3600000);
         when(jwtUtils.extractExpiration(TEST_TOKEN)).thenReturn(expiration);
 
-        AjaxResult result = authController.logout(request);
+        AjaxResult result = authController.logout(request, null);
 
         assertTrue(result.isSuccess());
         assertEquals("退出成功", result.get("msg"));
@@ -179,7 +179,7 @@ class AuthControllerTest {
     void testLogout_NoToken() {
         when(jwtUtils.extractTokenFromRequest(request)).thenReturn(null);
 
-        AjaxResult result = authController.logout(request);
+        AjaxResult result = authController.logout(request, null);
 
         assertTrue(result.isSuccess());
         assertEquals("退出成功", result.get("msg"));
@@ -192,11 +192,31 @@ class AuthControllerTest {
         when(jwtUtils.extractTokenFromRequest(request)).thenReturn("invalid.token");
         when(jwtUtils.validateToken("invalid.token")).thenReturn(false);
 
-        AjaxResult result = authController.logout(request);
+        AjaxResult result = authController.logout(request, null);
 
         assertTrue(result.isSuccess());
         assertEquals("退出成功", result.get("msg"));
         verify(tokenBlacklist, never()).addToBlacklist(anyString(), anyLong());
+    }
+
+    @Test
+    @DisplayName("logout - 同时拉黑refreshToken")
+    void testLogout_BlacklistRefreshToken() {
+        Map<String, String> body = new HashMap<>();
+        body.put("refreshToken", TEST_REFRESH_TOKEN);
+
+        when(jwtUtils.extractTokenFromRequest(request)).thenReturn(TEST_TOKEN);
+        when(jwtUtils.validateToken(TEST_TOKEN)).thenReturn(true);
+        when(jwtUtils.extractExpiration(TEST_TOKEN)).thenReturn(new Date(System.currentTimeMillis() + 3600000));
+        when(jwtUtils.validateToken(TEST_REFRESH_TOKEN)).thenReturn(true);
+        when(jwtUtils.isRefreshToken(TEST_REFRESH_TOKEN)).thenReturn(true);
+        when(jwtUtils.extractExpiration(TEST_REFRESH_TOKEN)).thenReturn(new Date(System.currentTimeMillis() + 7200000));
+
+        AjaxResult result = authController.logout(request, body);
+
+        assertTrue(result.isSuccess());
+        verify(tokenBlacklist).addToBlacklist(eq(TEST_TOKEN), anyLong());
+        verify(tokenBlacklist).addToBlacklist(eq(TEST_REFRESH_TOKEN), anyLong());
     }
 
     @Test
@@ -208,8 +228,10 @@ class AuthControllerTest {
         when(jwtUtils.validateToken(TEST_REFRESH_TOKEN)).thenReturn(true);
         when(jwtUtils.isRefreshToken(TEST_REFRESH_TOKEN)).thenReturn(true);
         when(jwtUtils.extractUsername(TEST_REFRESH_TOKEN)).thenReturn("testuser");
+        when(jwtUtils.extractExpiration(TEST_REFRESH_TOKEN)).thenReturn(new Date(System.currentTimeMillis() + 3600000));
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testLoginUser);
         when(jwtUtils.generateToken(testLoginUser)).thenReturn("newToken");
+        when(jwtUtils.generateRefreshToken(testLoginUser)).thenReturn("newRefreshToken");
 
         AjaxResult result = authController.refresh(body);
 
@@ -220,6 +242,8 @@ class AuthControllerTest {
         Map<String, Object> data = (Map<String, Object>) result.get("data");
         assertNotNull(data);
         assertEquals("newToken", data.get("token"));
+        assertEquals("newRefreshToken", data.get("refreshToken"));
+        verify(tokenBlacklist).addToBlacklist(eq(TEST_REFRESH_TOKEN), anyLong());
     }
 
     @Test
@@ -255,6 +279,21 @@ class AuthControllerTest {
 
         assertTrue(result.isError());
         assertEquals("刷新Token不能为空", result.get("msg"));
+    }
+
+    @Test
+    @DisplayName("refresh - 黑名单refreshToken返回错误")
+    void testRefresh_BlacklistedRefreshToken() {
+        Map<String, String> body = new HashMap<>();
+        body.put("refreshToken", TEST_REFRESH_TOKEN);
+        when(tokenBlacklist.isBlacklisted(TEST_REFRESH_TOKEN)).thenReturn(true);
+
+        AjaxResult result = authController.refresh(body);
+
+        assertTrue(result.isError());
+        assertEquals("刷新Token无效", result.get("msg"));
+        verify(jwtUtils, never()).validateToken(anyString());
+        verify(userDetailsService, never()).loadUserByUsername(anyString());
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.zjjh.fdtemp.service.impl;
 import com.zjjh.fdtemp.FdtempApplication;
 import com.zjjh.fdtemp.TestConfig;
 import com.zjjh.fdtemp.beans.LoginUser;
+import com.zjjh.fdtemp.beans.entity.SysRole;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.exception.ServiceException;
 import com.zjjh.fdtemp.constants.UserConstants;
@@ -47,6 +48,9 @@ public class SysUserServiceImplTest {
         adminUser.setLoginName("admin");
         adminUser.setUserName("超级管理员");
         adminUser.setStatus("0");
+        SysRole adminRole = new SysRole();
+        adminRole.setRoleKey("admin");
+        adminUser.setRoles(List.of(adminRole));
 
         Set<String> permissions = new HashSet<>();
         permissions.add("*:*:*");

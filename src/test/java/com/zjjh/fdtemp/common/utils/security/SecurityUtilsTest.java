@@ -1,6 +1,7 @@
 package com.zjjh.fdtemp.common.utils.security;
 
 import com.zjjh.fdtemp.beans.LoginUser;
+import com.zjjh.fdtemp.beans.entity.SysRole;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.exception.ServiceException;
 import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -179,6 +181,9 @@ class SecurityUtilsTest {
     void testIsAdmin_True() {
         SysUser admin = new SysUser();
         admin.setLoginName("admin");
+        SysRole adminRole = new SysRole();
+        adminRole.setRoleKey("admin");
+        admin.setRoles(List.of(adminRole));
         Set<String> permissions = new HashSet<>();
         permissions.add("*:*:*");
         LoginUser adminLoginUser = new LoginUser(admin, permissions);
@@ -205,7 +210,9 @@ class SecurityUtilsTest {
     @DisplayName("isAdminUser - 管理员用户返回true")
     void testIsAdminUser_True() {
         SysUser admin = new SysUser();
-        admin.setLoginName("admin");
+        SysRole adminRole = new SysRole();
+        adminRole.setRoleKey("admin");
+        admin.setRoles(List.of(adminRole));
 
         assertTrue(SecurityUtils.isAdminUser(admin));
     }
@@ -247,7 +254,9 @@ class SecurityUtilsTest {
         // 此测试依赖SpringUtils，在集成测试中覆盖
         // 验证isAdminUser方法
         SysUser admin = new SysUser();
-        admin.setLoginName("admin");
+        SysRole adminRole = new SysRole();
+        adminRole.setRoleKey("admin");
+        admin.setRoles(List.of(adminRole));
         assertTrue(SecurityUtils.isAdminUser(admin));
     }
 
