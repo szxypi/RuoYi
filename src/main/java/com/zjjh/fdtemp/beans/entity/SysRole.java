@@ -1,184 +1,181 @@
 package com.zjjh.fdtemp.beans.entity;
 
-import java.util.Set;
-import jakarta.validation.constraints.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.zjjh.fdtemp.beans.BaseEntity;
 import com.zjjh.fdtemp.common.annotation.Excel;
 import com.zjjh.fdtemp.common.annotation.Excel.ColumnType;
-import com.zjjh.fdtemp.beans.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Set;
 
 /**
  * 角色表 sys_role
  *
- * @author ruoyi
+ * @author szx
  */
-public class SysRole extends BaseEntity
-{
+public class SysRole extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 角色名称 */
+    /**
+     * 角色名称
+     */
     @Excel(name = "角色名称")
     private String roleName;
 
-    /** 角色权限 */
+    /**
+     * 角色权限
+     */
     @Excel(name = "角色权限")
     private String roleKey;
 
-    /** 角色排序 */
+    /**
+     * 角色排序
+     */
     @Excel(name = "角色排序", cellType = ColumnType.NUMERIC)
     private String roleSort;
 
-    /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限） */
+    /**
+     * 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限）
+     */
     @Excel(name = "数据范围", readConverterExp = "1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限")
     private String dataScope;
 
-    /** 角色状态（0正常 1停用） */
+    /**
+     * 角色状态（0正常 1停用）
+     */
     @Excel(name = "角色状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
-    /** 用户是否存在此角色标识 默认不存在 */
+    /**
+     * 用户是否存在此角色标识 默认不存在
+     */
     private boolean flag = false;
 
-    /** 菜单组 */
+    /**
+     * 菜单组
+     */
     private String[] menuIds;
 
-    /** 部门组（数据权限） */
+    /**
+     * 部门组（数据权限）
+     */
     private String[] deptIds;
 
-    /** 角色菜单权限 */
+    /**
+     * 角色菜单权限
+     */
     private Set<String> permissions;
 
-    public SysRole()
-    {
+    public SysRole() {
 
     }
 
-    public SysRole(String id)
-    {
+    public SysRole(String id) {
         this.setId(id);
     }
 
-    public boolean isAdmin()
-    {
+    public boolean isAdmin() {
         return isAdmin(this.getRoleKey());
     }
 
-    public static boolean isAdmin(String roleKey)
-    {
+    public static boolean isAdmin(String roleKey) {
         return "admin".equals(roleKey);
     }
 
-    public String getDataScope()
-    {
+    public String getDataScope() {
         return dataScope;
     }
 
-    public void setDataScope(String dataScope)
-    {
+    public void setDataScope(String dataScope) {
         this.dataScope = dataScope;
     }
 
     @NotBlank(message = "角色名称不能为空")
     @Size(min = 0, max = 30, message = "角色名称长度不能超过30个字符")
-    public String getRoleName()
-    {
+    public String getRoleName() {
         return roleName;
     }
 
-    public void setRoleName(String roleName)
-    {
+    public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
 
     @NotBlank(message = "权限字符不能为空")
     @Size(min = 0, max = 100, message = "权限字符长度不能超过100个字符")
-    public String getRoleKey()
-    {
+    public String getRoleKey() {
         return roleKey;
     }
 
-    public void setRoleKey(String roleKey)
-    {
+    public void setRoleKey(String roleKey) {
         this.roleKey = roleKey;
     }
 
     @NotBlank(message = "显示顺序不能为空")
-    public String getRoleSort()
-    {
+    public String getRoleSort() {
         return roleSort;
     }
 
-    public void setRoleSort(String roleSort)
-    {
+    public void setRoleSort(String roleSort) {
         this.roleSort = roleSort;
     }
 
-    public String getStatus()
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public boolean isFlag()
-    {
+    public boolean isFlag() {
         return flag;
     }
 
-    public void setFlag(boolean flag)
-    {
+    public void setFlag(boolean flag) {
         this.flag = flag;
     }
 
-    public String[] getMenuIds()
-    {
+    public String[] getMenuIds() {
         return menuIds;
     }
 
-    public void setMenuIds(String[] menuIds)
-    {
+    public void setMenuIds(String[] menuIds) {
         this.menuIds = menuIds;
     }
 
-    public String[] getDeptIds()
-    {
+    public String[] getDeptIds() {
         return deptIds;
     }
 
-    public void setDeptIds(String[] deptIds)
-    {
+    public void setDeptIds(String[] deptIds) {
         this.deptIds = deptIds;
     }
 
-    public Set<String> getPermissions()
-    {
+    public Set<String> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Set<String> permissions)
-    {
+    public void setPermissions(Set<String> permissions) {
         this.permissions = permissions;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("roleName", getRoleName())
-            .append("roleKey", getRoleKey())
-            .append("roleSort", getRoleSort())
-            .append("dataScope", getDataScope())
-            .append("status", getStatus())
-            .append("yn", getYn())
-            .append("createUser", getCreateUser())
-            .append("createTime", getCreateTime())
-            .append("updateUser", getUpdateUser())
-            .append("updateTime", getUpdateTime())
-            .append("attr1", getAttr1())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("id", getId())
+                .append("roleName", getRoleName())
+                .append("roleKey", getRoleKey())
+                .append("roleSort", getRoleSort())
+                .append("dataScope", getDataScope())
+                .append("status", getStatus())
+                .append("yn", getYn())
+                .append("createUser", getCreateUser())
+                .append("createTime", getCreateTime())
+                .append("updateUser", getUpdateUser())
+                .append("updateTime", getUpdateTime())
+                .append("attr1", getAttr1())
+                .toString();
     }
 }

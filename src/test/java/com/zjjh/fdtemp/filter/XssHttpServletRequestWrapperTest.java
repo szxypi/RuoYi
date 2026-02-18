@@ -1,12 +1,13 @@
 package com.zjjh.fdtemp.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * XssHttpServletRequestWrapper XSS过滤处理测试
@@ -62,7 +63,7 @@ class XssHttpServletRequestWrapperTest {
         void getParameterValues_WhenMultipleValues_ShouldProcessAll() {
             HttpServletRequest request = mock(HttpServletRequest.class);
             when(request.getParameterValues("test")).thenReturn(
-                new String[]{"<b>bold</b>", "  normal  ", "<script>xss</script>"});
+                    new String[]{"<b>bold</b>", "  normal  ", "<script>xss</script>"});
 
             XssHttpServletRequestWrapper wrapper = new XssHttpServletRequestWrapper(request);
             String[] result = wrapper.getParameterValues("test");

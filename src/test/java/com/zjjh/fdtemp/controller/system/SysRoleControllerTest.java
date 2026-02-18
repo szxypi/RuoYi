@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,8 +42,8 @@ public class SysRoleControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -59,7 +59,7 @@ public class SysRoleControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/role/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -81,13 +81,13 @@ public class SysRoleControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "测试新增角色")
-                .param("roleKey", "test_role")
-                .param("roleSort", "99")
-                .param("dataScope", "1")
-                .param("menuIds", "1")
-                .param("menuIds", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "测试新增角色")
+                        .param("roleKey", "test_role")
+                        .param("roleSort", "99")
+                        .param("dataScope", "1")
+                        .param("menuIds", "1")
+                        .param("menuIds", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -100,11 +100,11 @@ public class SysRoleControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "超级管理员")
-                .param("roleKey", "test_dup_name")
-                .param("roleSort", "99")
-                .param("status", "0"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "超级管理员")
+                        .param("roleKey", "test_dup_name")
+                        .param("roleSort", "99")
+                        .param("status", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -117,8 +117,8 @@ public class SysRoleControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/role/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", "1"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -131,8 +131,8 @@ public class SysRoleControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/role/checkRoleNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "唯一角色名测试"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "唯一角色名测试"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -145,8 +145,8 @@ public class SysRoleControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/role/checkRoleNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "超级管理员"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "超级管理员"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));

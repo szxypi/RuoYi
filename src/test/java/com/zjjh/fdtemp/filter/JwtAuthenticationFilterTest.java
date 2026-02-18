@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -24,7 +23,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -211,8 +211,8 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternal_AlreadyAuthenticated() throws ServletException, IOException {
         // 先设置一个已存在的认证
         SecurityContextHolder.getContext().setAuthentication(
-            new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                testLoginUser, null, testLoginUser.getAuthorities())
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        testLoginUser, null, testLoginUser.getAuthorities())
         );
 
         when(request.getHeader(TOKEN_HEADER)).thenReturn(TOKEN_PREFIX + VALID_TOKEN);
@@ -235,7 +235,7 @@ class JwtAuthenticationFilterTest {
         when(jwtUtils.isRefreshToken(VALID_TOKEN)).thenReturn(false);
         when(jwtUtils.extractUsername(VALID_TOKEN)).thenReturn("nonexistent");
         when(userDetailsService.loadUserByUsername("nonexistent"))
-            .thenThrow(new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found"));
+                .thenThrow(new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found"));
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 

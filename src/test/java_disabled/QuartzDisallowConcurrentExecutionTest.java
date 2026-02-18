@@ -85,9 +85,9 @@ class QuartzDisallowConcurrentExecutionTest {
             quartzJob.execute(context);
 
             jobInvokeUtilMock.verify(() -> JobInvokeUtil.invokeMethod(argThat(job ->
-                job.getId().equals("test-job-001") &&
-                job.getJobName().equals("禁止并发任务") &&
-                "1".equals(job.getConcurrent())
+                    job.getId().equals("test-job-001") &&
+                            job.getJobName().equals("禁止并发任务") &&
+                            "1".equals(job.getConcurrent())
             )));
         }
     }
@@ -115,10 +115,10 @@ class QuartzDisallowConcurrentExecutionTest {
     void testDifferenceFromQuartzJobExecution() {
         // QuartzDisallowConcurrentExecution 有禁止并发注解
         assertTrue(QuartzDisallowConcurrentExecution.class.isAnnotationPresent(
-            org.quartz.DisallowConcurrentExecution.class));
+                org.quartz.DisallowConcurrentExecution.class));
 
         // QuartzJobExecution 没有禁止并发注解
         assertFalse(QuartzJobExecution.class.isAnnotationPresent(
-            org.quartz.DisallowConcurrentExecution.class));
+                org.quartz.DisallowConcurrentExecution.class));
     }
 }

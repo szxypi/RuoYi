@@ -331,7 +331,7 @@ class SysJobServiceImplTest {
     void testSchedulerExceptionPropagation() throws Exception {
         when(jobMapper.updateJob(any(SysJob.class))).thenReturn(1);
         doThrow(new SchedulerException("Test exception"))
-            .when(scheduler).pauseJob(any(JobKey.class));
+                .when(scheduler).pauseJob(any(JobKey.class));
 
         assertThrows(SchedulerException.class, () -> jobService.pauseJob(testJob));
     }

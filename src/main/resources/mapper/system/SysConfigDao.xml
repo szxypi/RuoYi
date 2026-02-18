@@ -1,39 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjjh.fdtemp.dao.SysConfigDao">
 
     <resultMap type="SysConfig" id="SysConfigResult">
-    	<id     property="id"            column="ID"             />
-        <result property="configName"    column="config_name"    />
-        <result property="configKey"     column="config_key"     />
-        <result property="configValue"   column="config_value"   />
-        <result property="configType"    column="config_type"    />
-        <result property="createUser"    column="CREATE_USER"    />
-        <result property="createUserNickname" column="CREATE_USER_NICKNAME" />
-        <result property="createTime"    column="CREATE_TIME"    />
-        <result property="updateUser"    column="UPDATE_USER"    />
-        <result property="updateUserNickname" column="UPDATE_USER_NICKNAME" />
-        <result property="updateTime"    column="UPDATE_TIME"    />
+        <id property="id" column="ID"/>
+        <result property="configName" column="config_name"/>
+        <result property="configKey" column="config_key"/>
+        <result property="configValue" column="config_value"/>
+        <result property="configType" column="config_type"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createUserNickname" column="CREATE_USER_NICKNAME"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="updateUser" column="UPDATE_USER"/>
+        <result property="updateUserNickname" column="UPDATE_USER_NICKNAME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
     </resultMap>
 
     <sql id="selectConfigVo">
-        select ID, config_name, config_key, config_value, config_type, CREATE_USER, CREATE_TIME, UPDATE_USER, UPDATE_TIME, ATTR1
-		from sys_config
+        select ID,
+               config_name,
+               config_key,
+               config_value,
+               config_type,
+               CREATE_USER,
+               CREATE_TIME,
+               UPDATE_USER,
+               UPDATE_TIME,
+               ATTR1
+        from sys_config
     </sql>
 
     <!-- 查询条件 -->
-	<sql id="sqlwhereSearch">
-		<where>
-			<if test="id !=null and id != ''">
-				and ID = #{id}
-			</if>
-			<if test="configKey !=null and configKey != ''">
-				and config_key = #{configKey}
-			</if>
-		</where>
-	</sql>
+    <sql id="sqlwhereSearch">
+        <where>
+            <if test="id !=null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="configKey !=null and configKey != ''">
+                and config_key = #{configKey}
+            </if>
+        </where>
+    </sql>
 
     <select id="selectConfig" parameterType="SysConfig" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
@@ -43,28 +52,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectConfigList" parameterType="SysConfig" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
         <where>
-			<if test="configName != null and configName != ''">
-				AND config_name like concat('%', #{configName}, '%')
-			</if>
-			<if test="configType != null and configType != ''">
-				AND config_type = #{configType}
-			</if>
-			<if test="configKey != null and configKey != ''">
-				AND config_key like concat('%', #{configKey}, '%')
-			</if>
-			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				and date_format(CREATE_TIME,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
-			</if>
-			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				and date_format(CREATE_TIME,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
-			</if>
-		</where>
+            <if test="configName != null and configName != ''">
+                AND config_name like concat('%', #{configName}, '%')
+            </if>
+            <if test="configType != null and configType != ''">
+                AND config_type = #{configType}
+            </if>
+            <if test="configKey != null and configKey != ''">
+                AND config_key like concat('%', #{configKey}, '%')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(CREATE_TIME,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(CREATE_TIME,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+            </if>
+        </where>
     </select>
 
     <select id="selectConfigById" parameterType="String" resultMap="SysConfigResult">
-		<include refid="selectConfigVo"/>
-		where ID = #{id}
-	</select>
+        <include refid="selectConfigVo"/>
+        where ID = #{id}
+    </select>
 
     <select id="checkConfigKeyUnique" parameterType="String" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
@@ -73,26 +82,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <insert id="insertConfig" parameterType="SysConfig">
         insert into sys_config (
-        	<if test="id != null and id != ''">ID,</if>
-			<if test="configName != null and configName != '' ">config_name,</if>
-			<if test="configKey != null and configKey != '' ">config_key,</if>
-			<if test="configValue != null and configValue != '' ">config_value,</if>
-			<if test="configType != null and configType != '' ">config_type,</if>
-			<if test="createUser != null and createUser != ''">CREATE_USER,</if>
-			<if test="createUserNickname != null and createUserNickname != ''">CREATE_USER_NICKNAME,</if>
-			<if test="attr1 != null and attr1 != ''">ATTR1,</if>
- 			CREATE_TIME
+        <if test="id != null and id != ''">ID,</if>
+        <if test="configName != null and configName != '' ">config_name,</if>
+        <if test="configKey != null and configKey != '' ">config_key,</if>
+        <if test="configValue != null and configValue != '' ">config_value,</if>
+        <if test="configType != null and configType != '' ">config_type,</if>
+        <if test="createUser != null and createUser != ''">CREATE_USER,</if>
+        <if test="createUserNickname != null and createUserNickname != ''">CREATE_USER_NICKNAME,</if>
+        <if test="attr1 != null and attr1 != ''">ATTR1,</if>
+        CREATE_TIME
         )values(
-        	<if test="id != null and id != ''">#{id},</if>
-			<if test="configName != null and configName != ''">#{configName},</if>
-			<if test="configKey != null and configKey != ''">#{configKey},</if>
-			<if test="configValue != null and configValue != ''">#{configValue},</if>
-			<if test="configType != null and configType != ''">#{configType},</if>
-			<if test="createUser != null and createUser != ''">#{createUser},</if>
-			<if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
-			<if test="attr1 != null and attr1 != ''">#{attr1},</if>
- 			CURRENT_TIMESTAMP
-		)
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="configName != null and configName != ''">#{configName},</if>
+        <if test="configKey != null and configKey != ''">#{configKey},</if>
+        <if test="configValue != null and configValue != ''">#{configValue},</if>
+        <if test="configType != null and configType != ''">#{configType},</if>
+        <if test="createUser != null and createUser != ''">#{createUser},</if>
+        <if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
+        <if test="attr1 != null and attr1 != ''">#{attr1},</if>
+        CURRENT_TIMESTAMP
+        )
     </insert>
 
     <update id="updateConfig" parameterType="SysConfig">
@@ -103,21 +112,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="configValue != null and configValue != ''">config_value = #{configValue},</if>
             <if test="configType != null and configType != ''">config_type = #{configType},</if>
             <if test="updateUser != null and updateUser != ''">UPDATE_USER = #{updateUser},</if>
-            <if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME = #{updateUserNickname},</if>
+            <if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME =
+                #{updateUserNickname},
+            </if>
             <if test="attr1 != null">ATTR1 = #{attr1},</if>
- 			UPDATE_TIME = CURRENT_TIMESTAMP
+            UPDATE_TIME = CURRENT_TIMESTAMP
         </set>
         where ID = #{id}
     </update>
 
-	<delete id="deleteConfigById" parameterType="String">
-		delete from sys_config where ID = #{id}
-	</delete>
+    <delete id="deleteConfigById" parameterType="String">
+        delete
+        from sys_config
+        where ID = #{id}
+    </delete>
 
     <delete id="deleteConfigByIds" parameterType="String">
         delete from sys_config where ID in
         <foreach item="id" collection="array" open="(" separator="," close=")">
-        	#{id}
+            #{id}
         </foreach>
     </delete>
 

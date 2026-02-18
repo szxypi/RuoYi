@@ -1,219 +1,137 @@
 package com.zjjh.fdtemp.service.impl;
 
-import java.util.List;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.zjjh.fdtemp.constants.Constants;
-import com.zjjh.fdtemp.constants.UserConstants;
+import com.zjjh.fdtemp.beans.entity.SysConfig;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.common.exception.ServiceException;
 import com.zjjh.fdtemp.common.utils.CacheUtils;
 import com.zjjh.fdtemp.common.utils.StringUtils;
-import com.zjjh.fdtemp.beans.entity.SysConfig;
+import com.zjjh.fdtemp.constants.Constants;
+import com.zjjh.fdtemp.constants.UserConstants;
 import com.zjjh.fdtemp.dao.SysConfigDao;
 import com.zjjh.fdtemp.service.SysConfigService;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 参数配置 服务层实现
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
 @Service
-public class SysConfigServiceImpl implements SysConfigService
-{
-    @Autowired
-    private SysConfigDao configMapper;
+@RequiredArgsConstructor
+public class SysConfigServiceImpl implements SysConfigService {
+
+    private final SysConfigDao configMapper;
 
     /**
      * 项目启动时，初始化参数到缓存
      */
     @PostConstruct
-    public void init()
-    {
+    public void init() {
         loadingConfigCache();
     }
 
-    /**
-     * 查询参数配置信息
-     * 
-     * @param configId 参数配置ID
-     * @return 参数配置信息
-     */
     @Override
-    public SysConfig selectConfigById(String configId)
-    {
+    public SysConfig selectConfigById(String configId) {
         SysConfig config = new SysConfig();
         config.setId(configId);
         return configMapper.selectConfig(config);
     }
 
-    /**
-     * 根据键名查询参数配置信息
-     * 
-     * @param configKey 参数key
-     * @return 参数键值
-     */
     @Override
-    public String selectConfigByKey(String configKey)
-    {
-        String configValue = Convert.toStr(CacheUtils.get(getCacheName(), getCacheKey(configKey)));
-        if (StringUtils.isNotEmpty(configValue))
-        {
+    public String selectConfigByKey(String configKey) {
+        String configValue = Convert.toStr(CacheUtils.get(Constants.SYS_CONFIG_CACHE, getCacheKey(configKey)));
+        if (StringUtils.isNotEmpty(configValue)) {
             return configValue;
         }
-        SysConfig config = new SysConfig();
-        config.setConfigKey(configKey);
-        SysConfig retConfig = configMapper.selectConfig(config);
-        if (StringUtils.isNotNull(retConfig))
-        {
-            CacheUtils.put(getCacheName(), getCacheKey(configKey), retConfig.getConfigValue());
-            return retConfig.getConfigValue();
+
+        SysConfig query = new SysConfig();
+        query.setConfigKey(configKey);
+        SysConfig config = configMapper.selectConfig(query);
+        if (StringUtils.isNull(config)) {
+            return StringUtils.EMPTY;
         }
-        return StringUtils.EMPTY;
+
+        CacheUtils.put(Constants.SYS_CONFIG_CACHE, getCacheKey(configKey), config.getConfigValue());
+        return config.getConfigValue();
     }
 
-    /**
-     * 查询参数配置列表
-     * 
-     * @param config 参数配置信息
-     * @return 参数配置集合
-     */
     @Override
-    public List<SysConfig> selectConfigList(SysConfig config)
-    {
+    public List<SysConfig> selectConfigList(SysConfig config) {
         return configMapper.selectConfigList(config);
     }
 
-    /**
-     * 新增参数配置
-     * 
-     * @param config 参数配置信息
-     * @return 结果
-     */
     @Override
-    public int insertConfig(SysConfig config)
-    {
+    public int insertConfig(SysConfig config) {
         int row = configMapper.insertConfig(config);
-        if (row > 0)
-        {
-            CacheUtils.put(getCacheName(), getCacheKey(config.getConfigKey()), config.getConfigValue());
+        if (row > 0) {
+            CacheUtils.put(Constants.SYS_CONFIG_CACHE, getCacheKey(config.getConfigKey()), config.getConfigValue());
         }
         return row;
     }
 
-    /**
-     * 修改参数配置
-     * 
-     * @param config 参数配置信息
-     * @return 结果
-     */
     @Override
-    public int updateConfig(SysConfig config)
-    {
-        SysConfig temp = configMapper.selectConfigById(config.getId());
-        if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey()))
-        {
-            CacheUtils.remove(getCacheName(), getCacheKey(temp.getConfigKey()));
+    public int updateConfig(SysConfig config) {
+        SysConfig existing = configMapper.selectConfigById(config.getId());
+        if (!StringUtils.equals(existing.getConfigKey(), config.getConfigKey())) {
+            CacheUtils.remove(Constants.SYS_CONFIG_CACHE, getCacheKey(existing.getConfigKey()));
         }
 
         int row = configMapper.updateConfig(config);
-        if (row > 0)
-        {
-            CacheUtils.put(getCacheName(), getCacheKey(config.getConfigKey()), config.getConfigValue());
+        if (row > 0) {
+            CacheUtils.put(Constants.SYS_CONFIG_CACHE, getCacheKey(config.getConfigKey()), config.getConfigValue());
         }
         return row;
     }
 
-    /**
-     * 批量删除参数配置对象
-     * 
-     * @param ids 需要删除的数据ID
-     */
     @Override
-    public void deleteConfigByIds(String ids)
-    {
-        String[] configIds = Convert.toStrArray(ids);
-        for (String configId : configIds)
-        {
+    public void deleteConfigByIds(String ids) {
+        for (String configId : Convert.toStrArray(ids)) {
             SysConfig config = selectConfigById(configId);
-            if (StringUtils.equals(UserConstants.YES, config.getConfigType()))
-            {
-                throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
+            if (StringUtils.equals(UserConstants.YES, config.getConfigType())) {
+                throw new ServiceException(String.format("内置参数【%s】不能删除", config.getConfigKey()));
             }
             configMapper.deleteConfigById(configId);
-            CacheUtils.remove(getCacheName(), getCacheKey(config.getConfigKey()));
+            CacheUtils.remove(Constants.SYS_CONFIG_CACHE, getCacheKey(config.getConfigKey()));
         }
     }
 
-    /**
-     * 加载参数缓存数据
-     */
     @Override
-    public void loadingConfigCache()
-    {
-        List<SysConfig> configsList = configMapper.selectConfigList(new SysConfig());
-        for (SysConfig config : configsList)
-        {
-            CacheUtils.put(getCacheName(), getCacheKey(config.getConfigKey()), config.getConfigValue());
+    public void loadingConfigCache() {
+        List<SysConfig> configs = configMapper.selectConfigList(new SysConfig());
+        for (SysConfig config : configs) {
+            CacheUtils.put(Constants.SYS_CONFIG_CACHE, getCacheKey(config.getConfigKey()), config.getConfigValue());
         }
     }
 
-    /**
-     * 清空参数缓存数据
-     */
     @Override
-    public void clearConfigCache()
-    {
-        CacheUtils.removeAll(getCacheName());
+    public void clearConfigCache() {
+        CacheUtils.removeAll(Constants.SYS_CONFIG_CACHE);
     }
 
-    /**
-     * 重置参数缓存数据
-     */
     @Override
-    public void resetConfigCache()
-    {
+    public void resetConfigCache() {
         clearConfigCache();
         loadingConfigCache();
     }
 
-    /**
-     * 校验参数键名是否唯一
-     * 
-     * @param config 参数配置信息
-     * @return 结果
-     */
     @Override
-    public boolean checkConfigKeyUnique(SysConfig config)
-    {
-        String configId = StringUtils.isNull(config.getId()) ? "" : config.getId();
+    public boolean checkConfigKeyUnique(SysConfig config) {
+        String configId = StringUtils.defaultString(config.getId());
         SysConfig info = configMapper.checkConfigKeyUnique(config.getConfigKey());
-        if (StringUtils.isNotNull(info) && !info.getId().equals(configId))
-        {
-            return UserConstants.NOT_UNIQUE;
+        if (StringUtils.isNull(info)) {
+            return UserConstants.UNIQUE;
         }
-        return UserConstants.UNIQUE;
+        return configId.equals(info.getId()) ? UserConstants.UNIQUE : UserConstants.NOT_UNIQUE;
     }
 
     /**
-     * 获取cache name
-     * 
-     * @return 缓存名
+     * 构建缓存键
      */
-    private String getCacheName()
-    {
-        return Constants.SYS_CONFIG_CACHE;
-    }
-
-    /**
-     * 设置cache key
-     * 
-     * @param configKey 参数键
-     * @return 缓存键key
-     */
-    private String getCacheKey(String configKey)
-    {
+    private String getCacheKey(String configKey) {
         return Constants.SYS_CONFIG_KEY + configKey;
     }
 }

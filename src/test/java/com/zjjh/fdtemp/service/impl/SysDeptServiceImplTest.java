@@ -57,7 +57,7 @@ public class SysDeptServiceImplTest {
         LoginUser loginUser = new LoginUser(adminUser, permissions);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
-            loginUser, null, loginUser.getAuthorities()
+                loginUser, null, loginUser.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

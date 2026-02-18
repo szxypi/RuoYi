@@ -1,6 +1,5 @@
 package com.zjjh.fdtemp.controller.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjjh.fdtemp.beans.LoginUser;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.core.domain.AjaxResult;
@@ -95,7 +94,7 @@ class AuthControllerTest {
         Authentication authentication = mock(Authentication.class);
         when(authentication.getPrincipal()).thenReturn(testLoginUser);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenReturn(authentication);
+                .thenReturn(authentication);
         when(jwtUtils.generateToken(testLoginUser)).thenReturn(TEST_TOKEN);
         when(jwtUtils.generateRefreshToken(testLoginUser)).thenReturn(TEST_REFRESH_TOKEN);
 
@@ -125,7 +124,7 @@ class AuthControllerTest {
         loginBody.put("password", "wrongpassword");
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenThrow(new BadCredentialsException("Bad credentials"));
+                .thenThrow(new BadCredentialsException("Bad credentials"));
 
         assertThrows(BadCredentialsException.class, () -> authController.login(loginBody));
 
@@ -141,7 +140,7 @@ class AuthControllerTest {
         loginBody.put("password", "password123");
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenThrow(new BadCredentialsException("Bad credentials"));
+                .thenThrow(new BadCredentialsException("Bad credentials"));
 
         assertThrows(BadCredentialsException.class, () -> authController.login(loginBody));
     }
@@ -154,7 +153,7 @@ class AuthControllerTest {
         loginBody.put("password", "password123");
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenThrow(new BadCredentialsException("Bad credentials"));
+                .thenThrow(new BadCredentialsException("Bad credentials"));
 
         assertThrows(BadCredentialsException.class, () -> authController.login(loginBody));
     }

@@ -15,11 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * SysProfileController 单元测试
- *
+ * <p>
  * 注意：部分方法依赖SecurityUtils.getSysUser()，这些方法在集成测试中覆盖
  */
 @ExtendWith(MockitoExtension.class)
@@ -101,10 +101,10 @@ class SysProfileControllerTest {
     @DisplayName("updateAvatar - 验证空文件检查")
     void testUpdateAvatar_EmptyFile() throws Exception {
         MockMultipartFile emptyFile = new MockMultipartFile(
-            "avatarfile",
-            "",
-            "image/jpeg",
-            new byte[0]
+                "avatarfile",
+                "",
+                "image/jpeg",
+                new byte[0]
         );
 
         // 验证文件为空
@@ -115,10 +115,10 @@ class SysProfileControllerTest {
     @DisplayName("updateAvatar - 验证非空文件")
     void testUpdateAvatar_NonEmptyFile() throws Exception {
         MockMultipartFile file = new MockMultipartFile(
-            "avatarfile",
-            "test.jpg",
-            "image/jpeg",
-            "test image content".getBytes()
+                "avatarfile",
+                "test.jpg",
+                "image/jpeg",
+                "test image content".getBytes()
         );
 
         // 验证文件不为空

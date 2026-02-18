@@ -2,11 +2,10 @@ package com.zjjh.fdtemp.common.exception;
 
 /**
  * 业务异常
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public final class ServiceException extends RuntimeException
-{
+public final class ServiceException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -16,42 +15,40 @@ public final class ServiceException extends RuntimeException
 
     /**
      * 错误明细，内部调试错误
-     *
-     * 和 {@link CommonResult#getDetailMessage()} 一致的设计
      */
     private String detailMessage;
 
     /**
      * 空构造方法，避免反序列化问题
      */
-    public ServiceException()
-    {
+    public ServiceException() {
     }
 
-    public ServiceException(String message)
-    {
+    public ServiceException(String message) {
+        super(message);
         this.message = message;
     }
 
-    public String getDetailMessage()
-    {
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
+        this.message = message;
+    }
+
+    public String getDetailMessage() {
         return detailMessage;
     }
 
-    public ServiceException setDetailMessage(String detailMessage)
-    {
+    public ServiceException setDetailMessage(String detailMessage) {
         this.detailMessage = detailMessage;
         return this;
     }
 
     @Override
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
-    public ServiceException setMessage(String message)
-    {
+    public ServiceException setMessage(String message) {
         this.message = message;
         return this;
     }

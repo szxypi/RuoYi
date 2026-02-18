@@ -2,11 +2,10 @@ package com.zjjh.fdtemp.enums;
 
 /**
  * 操作人类别
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public enum OperatorType
-{
+public enum OperatorType {
     /**
      * 其它
      */

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,8 +42,8 @@ public class SysUserControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
@@ -60,9 +60,9 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + token)
-                .param("pageNum", "1")
-                .param("pageSize", "10"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("pageNum", "1")
+                        .param("pageSize", "10"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -84,13 +84,13 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/add")
-                .header("Authorization", "Bearer " + token)
-                .param("loginName", "testadduser")
-                .param("userName", "测试新增用户")
-                .param("password", "test123")
-                .param("deptId", "2")
-                .param("roleIds", "2")
-                .param("postIds", "4"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("loginName", "testadduser")
+                        .param("userName", "测试新增用户")
+                        .param("password", "test123")
+                        .param("deptId", "2")
+                        .param("roleIds", "2")
+                        .param("postIds", "4"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -103,11 +103,11 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/add")
-                .header("Authorization", "Bearer " + token)
-                .param("loginName", "admin")
-                .param("userName", "重复登录名测试")
-                .param("password", "test123")
-                .param("deptId", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("loginName", "admin")
+                        .param("userName", "重复登录名测试")
+                        .param("password", "test123")
+                        .param("deptId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -120,13 +120,13 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/edit")
-                .header("Authorization", "Bearer " + token)
-                .param("id", "2")
-                .param("loginName", "test")
-                .param("userName", "修改后的测试用户")
-                .param("deptId", "2")
-                .param("roleIds", "2")
-                .param("postIds", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", "2")
+                        .param("loginName", "test")
+                        .param("userName", "修改后的测试用户")
+                        .param("deptId", "2")
+                        .param("roleIds", "2")
+                        .param("postIds", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -139,8 +139,8 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", "3"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -153,9 +153,9 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/resetPwd")
-                .header("Authorization", "Bearer " + token)
-                .param("id", "2")
-                .param("password", "newPassword123"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", "2")
+                        .param("password", "newPassword123"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -168,8 +168,8 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/checkLoginNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("loginName", "uniqueuser123"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("loginName", "uniqueuser123"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -182,8 +182,8 @@ public class SysUserControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/user/checkLoginNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("loginName", "admin"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("loginName", "admin"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));

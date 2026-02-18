@@ -61,8 +61,8 @@ class SysJobControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -99,7 +99,7 @@ class SysJobControllerTest {
         when(jobService.selectJobList(any(SysJob.class))).thenReturn(jobList);
 
         mockMvc.perform(post("/monitor/job/list")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -115,7 +115,7 @@ class SysJobControllerTest {
         when(jobService.selectJobById("test-job-001")).thenReturn(job);
 
         mockMvc.perform(get("/monitor/job/detail/test-job-001")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value("test-job-001"));
@@ -130,8 +130,8 @@ class SysJobControllerTest {
         doNothing().when(jobService).deleteJobByIds("1,2,3");
 
         mockMvc.perform(post("/monitor/job/remove")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("ids", "1,2,3"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("ids", "1,2,3"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -147,9 +147,9 @@ class SysJobControllerTest {
         when(jobService.changeStatus(any(SysJob.class))).thenReturn(1);
 
         mockMvc.perform(post("/monitor/job/changeStatus")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("id", "test-job-001")
-                .param("status", "1"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("id", "test-job-001")
+                        .param("status", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -165,8 +165,8 @@ class SysJobControllerTest {
         when(jobService.run(any(SysJob.class))).thenReturn(true);
 
         mockMvc.perform(post("/monitor/job/run")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("id", "test-job-001"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("id", "test-job-001"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -181,8 +181,8 @@ class SysJobControllerTest {
         when(jobService.run(any(SysJob.class))).thenReturn(false);
 
         mockMvc.perform(post("/monitor/job/run")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("id", "non-existent"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("id", "non-existent"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -198,14 +198,14 @@ class SysJobControllerTest {
         when(jobService.insertJob(any(SysJob.class))).thenReturn(1);
 
         mockMvc.perform(post("/monitor/job/add")
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("jobName", "测试任务")
-                .param("jobGroup", "DEFAULT")
-                .param("invokeTarget", "testService.testMethod()")
-                .param("cronExpression", "0 0/5 * * * ?")
-                .param("misfirePolicy", "0")
-                .param("concurrent", "0"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("jobName", "测试任务")
+                        .param("jobGroup", "DEFAULT")
+                        .param("invokeTarget", "testService.testMethod()")
+                        .param("cronExpression", "0 0/5 * * * ?")
+                        .param("misfirePolicy", "0")
+                        .param("concurrent", "0"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -219,12 +219,12 @@ class SysJobControllerTest {
         when(jobService.checkCronExpressionIsValid("invalid")).thenReturn(false);
 
         mockMvc.perform(post("/monitor/job/add")
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("jobName", "测试任务")
-                .param("jobGroup", "DEFAULT")
-                .param("invokeTarget", "testService.testMethod()")
-                .param("cronExpression", "invalid"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("jobName", "测试任务")
+                        .param("jobGroup", "DEFAULT")
+                        .param("invokeTarget", "testService.testMethod()")
+                        .param("cronExpression", "invalid"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -240,13 +240,13 @@ class SysJobControllerTest {
         when(jobService.updateJob(any(SysJob.class))).thenReturn(1);
 
         mockMvc.perform(post("/monitor/job/edit")
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", "test-job-001")
-                .param("jobName", "更新后的任务")
-                .param("jobGroup", "DEFAULT")
-                .param("invokeTarget", "testService.testMethod()")
-                .param("cronExpression", "0 0/5 * * * ?"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("id", "test-job-001")
+                        .param("jobName", "更新后的任务")
+                        .param("jobGroup", "DEFAULT")
+                        .param("invokeTarget", "testService.testMethod()")
+                        .param("cronExpression", "0 0/5 * * * ?"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -260,8 +260,8 @@ class SysJobControllerTest {
         when(jobService.checkCronExpressionIsValid("0 0/5 * * * ?")).thenReturn(true);
 
         mockMvc.perform(post("/monitor/job/checkCronExpressionIsValid")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("cronExpression", "0 0/5 * * * ?"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("cronExpression", "0 0/5 * * * ?"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(result -> {
@@ -279,8 +279,8 @@ class SysJobControllerTest {
         when(jobService.checkCronExpressionIsValid("0 0/5 * * * ?")).thenReturn(true);
 
         mockMvc.perform(get("/monitor/job/queryCronExpression")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("cronExpression", "0 0/5 * * * ?"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("cronExpression", "0 0/5 * * * ?"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray());
@@ -295,8 +295,8 @@ class SysJobControllerTest {
         when(jobService.checkCronExpressionIsValid("invalid")).thenReturn(false);
 
         mockMvc.perform(get("/monitor/job/queryCronExpression")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("cronExpression", "invalid"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("cronExpression", "invalid"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -318,7 +318,7 @@ class SysJobControllerTest {
     @DisplayName("测试无效Token访问被拒绝")
     void testInvalidTokenAccess() throws Exception {
         mockMvc.perform(post("/monitor/job/list")
-                .header("Authorization", "Bearer invalidtoken"))
+                        .header("Authorization", "Bearer invalidtoken"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }

@@ -3,8 +3,8 @@ package com.zjjh.fdtemp.service.impl;
 import com.zjjh.fdtemp.FdtempApplication;
 import com.zjjh.fdtemp.TestConfig;
 import com.zjjh.fdtemp.beans.LoginUser;
-import com.zjjh.fdtemp.beans.entity.SysRole;
 import com.zjjh.fdtemp.beans.entity.SysPost;
+import com.zjjh.fdtemp.beans.entity.SysRole;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.exception.ServiceException;
 import com.zjjh.fdtemp.constants.UserConstants;
@@ -57,7 +57,7 @@ public class SysPostServiceImplTest {
         LoginUser loginUser = new LoginUser(adminUser, permissions);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
-            loginUser, null, loginUser.getAuthorities()
+                loginUser, null, loginUser.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

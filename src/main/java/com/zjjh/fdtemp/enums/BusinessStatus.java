@@ -2,11 +2,10 @@ package com.zjjh.fdtemp.enums;
 
 /**
  * 操作状态
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public enum BusinessStatus
-{
+public enum BusinessStatus {
     /**
      * 成功
      */

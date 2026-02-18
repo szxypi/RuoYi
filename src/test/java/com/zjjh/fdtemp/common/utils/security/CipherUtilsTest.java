@@ -75,7 +75,7 @@ class CipherUtilsTest {
         });
 
         assertTrue(exception.getMessage().contains("Unable to acquire"));
-        assertTrue(exception.getCause() instanceof NoSuchAlgorithmException);
+        assertInstanceOf(NoSuchAlgorithmException.class, exception.getCause());
     }
 
     @Test

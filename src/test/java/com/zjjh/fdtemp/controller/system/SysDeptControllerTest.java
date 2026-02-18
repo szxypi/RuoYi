@@ -45,8 +45,8 @@ public class SysDeptControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -62,7 +62,7 @@ public class SysDeptControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(get("/system/dept/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -84,14 +84,14 @@ public class SysDeptControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/dept/add")
-                .header("Authorization", "Bearer " + token)
-                .param("deptName", "测试新增部门")
-                .param("parentId", SHENZHEN_DEPT_ID)
-                .param("orderNum", "99")
-                .param("leader", "test")
-                .param("phone", "13800000000")
-                .param("email", "test@test.com")
-                .param("status", "0"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("deptName", "测试新增部门")
+                        .param("parentId", SHENZHEN_DEPT_ID)
+                        .param("orderNum", "99")
+                        .param("leader", "test")
+                        .param("phone", "13800000000")
+                        .param("email", "test@test.com")
+                        .param("status", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -104,10 +104,10 @@ public class SysDeptControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/dept/add")
-                .header("Authorization", "Bearer " + token)
-                .param("deptName", "总公司")
-                .param("parentId", "0")
-                .param("orderNum", "99"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("deptName", "总公司")
+                        .param("parentId", "0")
+                        .param("orderNum", "99"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -120,7 +120,7 @@ public class SysDeptControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(delete("/system/dept/" + SHENZHEN_DEPT_ID)
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(301));
@@ -133,7 +133,7 @@ public class SysDeptControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(delete("/system/dept/" + ROOT_DEPT_ID)
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(301));
@@ -146,9 +146,9 @@ public class SysDeptControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/dept/checkDeptNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("deptName", "唯一部门名测试")
-                .param("parentId", ROOT_DEPT_ID))
+                        .header("Authorization", "Bearer " + token)
+                        .param("deptName", "唯一部门名测试")
+                        .param("parentId", ROOT_DEPT_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));

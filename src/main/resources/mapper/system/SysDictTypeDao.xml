@@ -1,112 +1,116 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjjh.fdtemp.dao.SysDictTypeDao">
 
-	<resultMap type="SysDictType" id="SysDictTypeResult">
-		<id     property="id"         column="ID"          />
-		<result property="dictName"   column="dict_name"   />
-		<result property="dictType"   column="dict_type"   />
-		<result property="status"     column="status"      />
-		<result property="createUser" column="CREATE_USER" />
-		<result property="createUserNickname" column="CREATE_USER_NICKNAME" />
-		<result property="createTime" column="CREATE_TIME" />
-		<result property="updateUser" column="UPDATE_USER" />
-		<result property="updateUserNickname" column="UPDATE_USER_NICKNAME" />
-		<result property="updateTime" column="UPDATE_TIME" />
-	</resultMap>
+    <resultMap type="SysDictType" id="SysDictTypeResult">
+        <id property="id" column="ID"/>
+        <result property="dictName" column="dict_name"/>
+        <result property="dictType" column="dict_type"/>
+        <result property="status" column="status"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createUserNickname" column="CREATE_USER_NICKNAME"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="updateUser" column="UPDATE_USER"/>
+        <result property="updateUserNickname" column="UPDATE_USER_NICKNAME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+    </resultMap>
 
-	<sql id="selectDictTypeVo">
+    <sql id="selectDictTypeVo">
         select ID, dict_name, dict_type, status, CREATE_USER, CREATE_TIME, ATTR1
-		from sys_dict_type
+        from sys_dict_type
     </sql>
 
-	<select id="selectDictTypeList" parameterType="SysDictType" resultMap="SysDictTypeResult">
-	    <include refid="selectDictTypeVo"/>
-		<where>
-		    <if test="dictName != null and dictName != ''">
-				AND dict_name like concat('%', #{dictName}, '%')
-			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
-			</if>
-			<if test="dictType != null and dictType != ''">
-				AND dict_type like concat('%', #{dictType}, '%')
-			</if>
-			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				and date_format(CREATE_TIME,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
-			</if>
-			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				and date_format(CREATE_TIME,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
-			</if>
-	    </where>
-	</select>
+    <select id="selectDictTypeList" parameterType="SysDictType" resultMap="SysDictTypeResult">
+        <include refid="selectDictTypeVo"/>
+        <where>
+            <if test="dictName != null and dictName != ''">
+                AND dict_name like concat('%', #{dictName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="dictType != null and dictType != ''">
+                AND dict_type like concat('%', #{dictType}, '%')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(CREATE_TIME,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(CREATE_TIME,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+            </if>
+        </where>
+    </select>
 
-	<select id="selectDictTypeAll" resultMap="SysDictTypeResult">
-		<include refid="selectDictTypeVo"/>
-	</select>
+    <select id="selectDictTypeAll" resultMap="SysDictTypeResult">
+        <include refid="selectDictTypeVo"/>
+    </select>
 
-	<select id="selectDictTypeById" parameterType="String" resultMap="SysDictTypeResult">
-		<include refid="selectDictTypeVo"/>
-		where ID = #{id}
-	</select>
+    <select id="selectDictTypeById" parameterType="String" resultMap="SysDictTypeResult">
+        <include refid="selectDictTypeVo"/>
+        where ID = #{id}
+    </select>
 
-	<select id="selectDictTypeByType" parameterType="String" resultMap="SysDictTypeResult">
-		<include refid="selectDictTypeVo"/>
-		where dict_type = #{dictType}
-	</select>
+    <select id="selectDictTypeByType" parameterType="String" resultMap="SysDictTypeResult">
+        <include refid="selectDictTypeVo"/>
+        where dict_type = #{dictType}
+    </select>
 
-	<select id="checkDictTypeUnique" parameterType="String" resultMap="SysDictTypeResult">
-		<include refid="selectDictTypeVo"/>
-		where dict_type = #{dictType} limit 1
-	</select>
+    <select id="checkDictTypeUnique" parameterType="String" resultMap="SysDictTypeResult">
+        <include refid="selectDictTypeVo"/>
+        where dict_type = #{dictType} limit 1
+    </select>
 
-	<delete id="deleteDictTypeById" parameterType="String">
- 		delete from sys_dict_type where ID = #{id}
- 	</delete>
+    <delete id="deleteDictTypeById" parameterType="String">
+        delete
+        from sys_dict_type
+        where ID = #{id}
+    </delete>
 
-	<delete id="deleteDictTypeByIds" parameterType="String">
- 		delete from sys_dict_type where ID in
- 		<foreach collection="array" item="id" open="(" separator="," close=")">
- 			#{id}
+    <delete id="deleteDictTypeByIds" parameterType="String">
+        delete from sys_dict_type where ID in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
         </foreach>
- 	</delete>
+    </delete>
 
- 	<update id="updateDictType" parameterType="SysDictType">
- 		update sys_dict_type
- 		<set>
- 			<if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
- 			<if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
- 			<if test="status != null">status = #{status},</if>
- 			<if test="attr1 != null">ATTR1 = #{attr1},</if>
- 			<if test="updateUser != null and updateUser != ''">UPDATE_USER = #{updateUser},</if>
- 			<if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME = #{updateUserNickname},</if>
- 			UPDATE_TIME = CURRENT_TIMESTAMP
- 		</set>
- 		where ID = #{id}
-	</update>
+    <update id="updateDictType" parameterType="SysDictType">
+        update sys_dict_type
+        <set>
+            <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
+            <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="attr1 != null">ATTR1 = #{attr1},</if>
+            <if test="updateUser != null and updateUser != ''">UPDATE_USER = #{updateUser},</if>
+            <if test="updateUserNickname != null and updateUserNickname != ''">UPDATE_USER_NICKNAME =
+                #{updateUserNickname},
+            </if>
+            UPDATE_TIME = CURRENT_TIMESTAMP
+        </set>
+        where ID = #{id}
+    </update>
 
- 	<insert id="insertDictType" parameterType="SysDictType">
- 		insert into sys_dict_type(
- 			<if test="id != null and id != ''">ID,</if>
- 			<if test="dictName != null and dictName != ''">dict_name,</if>
- 			<if test="dictType != null and dictType != ''">dict_type,</if>
- 			<if test="status != null">status,</if>
- 			<if test="attr1 != null and attr1 != ''">ATTR1,</if>
- 			<if test="createUser != null and createUser != ''">CREATE_USER,</if>
- 			<if test="createUserNickname != null and createUserNickname != ''">CREATE_USER_NICKNAME,</if>
- 			CREATE_TIME
- 		)values(
- 			<if test="id != null and id != ''">#{id},</if>
- 			<if test="dictName != null and dictName != ''">#{dictName},</if>
- 			<if test="dictType != null and dictType != ''">#{dictType},</if>
- 			<if test="status != null">#{status},</if>
- 			<if test="attr1 != null and attr1 != ''">#{attr1},</if>
- 			<if test="createUser != null and createUser != ''">#{createUser},</if>
- 			<if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
- 			CURRENT_TIMESTAMP
- 		)
-	</insert>
+    <insert id="insertDictType" parameterType="SysDictType">
+        insert into sys_dict_type(
+        <if test="id != null and id != ''">ID,</if>
+        <if test="dictName != null and dictName != ''">dict_name,</if>
+        <if test="dictType != null and dictType != ''">dict_type,</if>
+        <if test="status != null">status,</if>
+        <if test="attr1 != null and attr1 != ''">ATTR1,</if>
+        <if test="createUser != null and createUser != ''">CREATE_USER,</if>
+        <if test="createUserNickname != null and createUserNickname != ''">CREATE_USER_NICKNAME,</if>
+        CREATE_TIME
+        )values(
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="dictName != null and dictName != ''">#{dictName},</if>
+        <if test="dictType != null and dictType != ''">#{dictType},</if>
+        <if test="status != null">#{status},</if>
+        <if test="attr1 != null and attr1 != ''">#{attr1},</if>
+        <if test="createUser != null and createUser != ''">#{createUser},</if>
+        <if test="createUserNickname != null and createUserNickname != ''">#{createUserNickname},</if>
+        CURRENT_TIMESTAMP
+        )
+    </insert>
 
 </mapper>

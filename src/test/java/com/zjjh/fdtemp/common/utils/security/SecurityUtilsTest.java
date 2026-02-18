@@ -4,14 +4,11 @@ import com.zjjh.fdtemp.beans.LoginUser;
 import com.zjjh.fdtemp.beans.entity.SysRole;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import com.zjjh.fdtemp.common.exception.ServiceException;
-import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
-import com.zjjh.fdtemp.service.SysUserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,9 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 
 /**
  * SecurityUtils 单元测试
@@ -61,7 +55,7 @@ class SecurityUtilsTest {
 
     private void setAuthentication(LoginUser loginUser) {
         Authentication auth = new UsernamePasswordAuthenticationToken(
-            loginUser, null, loginUser.getAuthorities()
+                loginUser, null, loginUser.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

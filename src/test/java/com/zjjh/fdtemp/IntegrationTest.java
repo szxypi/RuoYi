@@ -18,15 +18,16 @@ import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * 集成测试类 - 包含登录、权限、安全漏洞测试
- *
+ * <p>
  * API 响应规范：
  * - HTTP 状态码始终为 200
  * - 业务状态通过 code 字段区分：0=成功，500=错误
- *
+ * <p>
  * API 路径规范（RuoYi风格）：
  * - 列表查询: POST /xxx/list 或 GET /xxx/list
  * - 新增: POST /xxx/add
@@ -80,8 +81,8 @@ public class IntegrationTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
@@ -122,8 +123,8 @@ public class IntegrationTest {
         loginBody.put("password", ADMIN_PASSWORD);
 
         mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
@@ -141,8 +142,8 @@ public class IntegrationTest {
 
         // 业务错误返回 HTTP 200 + code 500
         mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -157,8 +158,8 @@ public class IntegrationTest {
         loginBody.put("password", "anypassword");
 
         mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -171,7 +172,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/auth/info")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
@@ -187,7 +188,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/auth/logout")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -202,8 +203,8 @@ public class IntegrationTest {
         refreshBody.put("refreshToken", tokens.get("refreshToken"));
 
         mockMvc.perform(post("/auth/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(refreshBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(refreshBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
@@ -220,16 +221,16 @@ public class IntegrationTest {
         logoutBody.put("refreshToken", tokens.get("refreshToken"));
 
         mockMvc.perform(post("/auth/logout")
-                .header("Authorization", "Bearer " + tokens.get("token"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(logoutBody)))
+                        .header("Authorization", "Bearer " + tokens.get("token"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(logoutBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
 
         mockMvc.perform(post("/auth/refresh")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(logoutBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(logoutBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -242,7 +243,7 @@ public class IntegrationTest {
         Map<String, String> tokens = loginAndGetTokens(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + tokens.get("refreshToken")))
+                        .header("Authorization", "Bearer " + tokens.get("refreshToken")))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -266,7 +267,7 @@ public class IntegrationTest {
     @DisplayName("2.2 无效Token访问被拒绝")
     void testInvalidTokenAccess() throws Exception {
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer invalidtoken123"))
+                        .header("Authorization", "Bearer invalidtoken123"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -282,9 +283,9 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + token)
-                .param("pageNum", "1")
-                .param("pageSize", "10"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("pageNum", "1")
+                        .param("pageSize", "10"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray())
@@ -298,7 +299,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -311,7 +312,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/dept/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -324,7 +325,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/menu/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -337,8 +338,8 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/dict/data/list")
-                .header("Authorization", "Bearer " + token)
-                .param("dictType", "sys_user_sex"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("dictType", "sys_user_sex"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -362,9 +363,9 @@ public class IntegrationTest {
         user.put("deptId", "2");
 
         mockMvc.perform(post("/system/user/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -377,8 +378,8 @@ public class IntegrationTest {
         String token = login(NORMAL_USERNAME, NORMAL_PASSWORD);
 
         mockMvc.perform(post("/system/user/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -396,9 +397,9 @@ public class IntegrationTest {
         role.put("roleKey", "modified");
 
         mockMvc.perform(post("/system/role/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -415,9 +416,9 @@ public class IntegrationTest {
         menu.put("parentId", "0");
 
         mockMvc.perform(post("/system/menu/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(menu)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(menu)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -441,9 +442,9 @@ public class IntegrationTest {
 
         // 请求应该能正常处理（XSS过滤后），或者返回业务错误
         mockMvc.perform(post("/system/user/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
@@ -461,8 +462,8 @@ public class IntegrationTest {
 
         String xssPayload = "<script>alert('xss')</script>";
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + token)
-                .param("loginName", xssPayload))
+                        .header("Authorization", "Bearer " + token)
+                        .param("loginName", xssPayload))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -479,7 +480,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/config/../../../etc/passwd")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
@@ -495,7 +496,7 @@ public class IntegrationTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/config/..%2F..%2F..%2Fetc%2Fpasswd")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
@@ -517,8 +518,8 @@ public class IntegrationTest {
 
         // SQL注入应该被MyBatis的预编译语句防止，返回认证失败
         mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -532,8 +533,8 @@ public class IntegrationTest {
 
         // SQL注入应该被MyBatis的预编译语句防止
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + token)
-                .param("loginName", "admin' OR '1'='1"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("loginName", "admin' OR '1'='1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -549,8 +550,8 @@ public class IntegrationTest {
     void testExceptionHandling_InvalidJson() throws Exception {
         // 无效 JSON 应该返回业务错误或 HTTP 400
         mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{invalid json}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{invalid json}"))
                 .andDo(print())
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
@@ -568,7 +569,7 @@ public class IntegrationTest {
 
         // 使用 DELETE 方法访问只支持 GET/POST 的接口
         mockMvc.perform(delete("/auth/login")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
@@ -590,19 +591,19 @@ public class IntegrationTest {
 
         // 测试管理员可以访问各模块列表接口
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/system/role/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/system/menu/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/system/dept/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
 
@@ -614,7 +615,7 @@ public class IntegrationTest {
 
         // 普通用户可以查看用户列表 (有 system:user:query 权限)
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -622,9 +623,9 @@ public class IntegrationTest {
         // 普通用户不能新增用户 (没有 system:user:add 权限)
         // 权限拒绝返回 HTTP 200 + code=500
         mockMvc.perform(post("/system/user/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -639,7 +640,7 @@ public class IntegrationTest {
     @DisplayName("10.1 空Token被拒绝")
     void testEmptyToken() throws Exception {
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer "))
+                        .header("Authorization", "Bearer "))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -649,7 +650,7 @@ public class IntegrationTest {
     @DisplayName("10.2 格式错误的Token被拒绝")
     void testMalformedToken() throws Exception {
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "InvalidFormat"))
+                        .header("Authorization", "InvalidFormat"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -662,7 +663,7 @@ public class IntegrationTest {
         String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYxNjIzOTAyMiwiZXhwIjoxNjE2MjM5MDIyfQ.invalid";
 
         mockMvc.perform(post("/system/user/list")
-                .header("Authorization", "Bearer " + expiredToken))
+                        .header("Authorization", "Bearer " + expiredToken))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }

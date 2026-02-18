@@ -242,9 +242,9 @@ class JobInvokeUtilTest {
 
     @ParameterizedTest
     @CsvSource({
-        "testService.method(), testService, method",
-        "service.method('param'), service, method",
-        "com.example.Service.method(), com.example.Service, method"
+            "testService.method(), testService, method",
+            "service.method('param'), service, method",
+            "com.example.Service.method(), com.example.Service, method"
     })
     @DisplayName("测试 getBeanName 和 getMethodName 组合")
     void testBeanNameAndMethodExtraction(String invokeTarget, String expectedBeanName, String expectedMethodName) {

@@ -76,9 +76,9 @@ class QuartzJobExecutionTest {
 
             // 验证参数传递正确
             jobInvokeUtilMock.verify(() -> JobInvokeUtil.invokeMethod(argThat(job ->
-                job.getId().equals("test-job-001") &&
-                job.getJobName().equals("测试任务") &&
-                job.getInvokeTarget().equals("testService.testMethod()")
+                    job.getId().equals("test-job-001") &&
+                            job.getJobName().equals("测试任务") &&
+                            job.getInvokeTarget().equals("testService.testMethod()")
             )));
         }
     }
@@ -130,7 +130,7 @@ class QuartzJobExecutionTest {
             quartzJobExecution.execute(context);
 
             jobInvokeUtilMock.verify(() -> JobInvokeUtil.invokeMethod(argThat(job ->
-                job.getInvokeTarget().equals("testService.methodWithParams('test', 123, true)")
+                    job.getInvokeTarget().equals("testService.methodWithParams('test', 123, true)")
             )));
         }
     }
@@ -148,7 +148,7 @@ class QuartzJobExecutionTest {
             quartzJobExecution.execute(context);
 
             jobInvokeUtilMock.verify(() -> JobInvokeUtil.invokeMethod(argThat(job ->
-                job.getInvokeTarget().equals("com.example.service.TestService.testMethod()")
+                    job.getInvokeTarget().equals("com.example.service.TestService.testMethod()")
             )));
         }
     }

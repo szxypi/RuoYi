@@ -61,8 +61,8 @@ class SysJobLogControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -99,7 +99,7 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogList(any(SysJobLog.class))).thenReturn(logList);
 
         mockMvc.perform(post("/monitor/jobLog/list")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -115,7 +115,7 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogById("log-001")).thenReturn(log);
 
         mockMvc.perform(get("/monitor/jobLog/detail/log-001")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value("log-001"));
@@ -130,7 +130,7 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogById("non-existent")).thenReturn(null);
 
         mockMvc.perform(get("/monitor/jobLog/detail/non-existent")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -145,8 +145,8 @@ class SysJobLogControllerTest {
         when(jobLogService.deleteJobLogByIds("1,2,3")).thenReturn(3);
 
         mockMvc.perform(post("/monitor/jobLog/remove")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("ids", "1,2,3"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("ids", "1,2,3"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -160,8 +160,8 @@ class SysJobLogControllerTest {
         when(jobLogService.deleteJobLogByIds("1")).thenReturn(1);
 
         mockMvc.perform(post("/monitor/jobLog/remove")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("ids", "1"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("ids", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -175,7 +175,7 @@ class SysJobLogControllerTest {
         doNothing().when(jobLogService).cleanJobLog();
 
         mockMvc.perform(post("/monitor/jobLog/clean")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -194,8 +194,8 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogList(any(SysJobLog.class))).thenReturn(logList);
 
         mockMvc.perform(post("/monitor/jobLog/list")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("jobName", "特定任务"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("jobName", "特定任务"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -215,8 +215,8 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogList(any(SysJobLog.class))).thenReturn(logList);
 
         mockMvc.perform(post("/monitor/jobLog/list")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("status", Constants.FAIL))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("status", Constants.FAIL))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -236,8 +236,8 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogList(any(SysJobLog.class))).thenReturn(logList);
 
         mockMvc.perform(post("/monitor/jobLog/list")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("jobGroup", "SYSTEM"))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("jobGroup", "SYSTEM"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -258,7 +258,7 @@ class SysJobLogControllerTest {
     @DisplayName("测试无效Token访问被拒绝")
     void testInvalidTokenAccess() throws Exception {
         mockMvc.perform(post("/monitor/jobLog/list")
-                .header("Authorization", "Bearer invalidtoken"))
+                        .header("Authorization", "Bearer invalidtoken"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -268,7 +268,7 @@ class SysJobLogControllerTest {
     @DisplayName("测试空Token访问被拒绝")
     void testEmptyTokenAccess() throws Exception {
         mockMvc.perform(post("/monitor/jobLog/list")
-                .header("Authorization", "Bearer "))
+                        .header("Authorization", "Bearer "))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -281,7 +281,7 @@ class SysJobLogControllerTest {
         when(jobLogService.selectJobLogById(anyString())).thenReturn(null);
 
         mockMvc.perform(get("/monitor/jobLog/detail/invalid-id-format!@#$%")
-                .header("Authorization", "Bearer " + adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -295,8 +295,8 @@ class SysJobLogControllerTest {
         when(jobLogService.deleteJobLogByIds("")).thenReturn(0);
 
         mockMvc.perform(post("/monitor/jobLog/remove")
-                .header("Authorization", "Bearer " + adminToken)
-                .param("ids", ""))
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("ids", ""))
                 .andDo(print())
                 .andExpect(status().isOk());
 

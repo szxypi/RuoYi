@@ -53,8 +53,8 @@ public class SysRoleControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
@@ -75,7 +75,7 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -88,8 +88,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/list")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "管理员"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "管理员"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -122,9 +122,9 @@ public class SysRoleControllerTest {
         role.put("menuIds", new String[]{"1", "2"});
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -142,9 +142,9 @@ public class SysRoleControllerTest {
         role.put("roleSort", "99");
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -162,9 +162,9 @@ public class SysRoleControllerTest {
         role.put("roleSort", "99");
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -182,9 +182,9 @@ public class SysRoleControllerTest {
         role.put("roleSort", "99");
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -208,9 +208,9 @@ public class SysRoleControllerTest {
         role.put("menuIds", new String[]{"1", "2", "3"});
 
         mockMvc.perform(post("/system/role/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -228,9 +228,9 @@ public class SysRoleControllerTest {
         role.put("roleKey", "admin");
 
         mockMvc.perform(post("/system/role/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -253,15 +253,15 @@ public class SysRoleControllerTest {
         role.put("roleSort", "99");
 
         mockMvc.perform(post("/system/role/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andExpect(status().isOk());
 
         // 查询角色ID
         MvcResult result = mockMvc.perform(post("/system/role/list")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "待删除角色"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "待删除角色"))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
@@ -270,8 +270,8 @@ public class SysRoleControllerTest {
 
         // 删除角色
         mockMvc.perform(post("/system/role/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", roleId))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", roleId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -285,8 +285,8 @@ public class SysRoleControllerTest {
 
         // admin角色已分配给用户
         mockMvc.perform(post("/system/role/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", "1"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -309,9 +309,9 @@ public class SysRoleControllerTest {
         role.put("roleKey", "common");
 
         mockMvc.perform(post("/system/role/changeStatus")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -330,9 +330,9 @@ public class SysRoleControllerTest {
         role.put("roleKey", "admin");
 
         mockMvc.perform(post("/system/role/changeStatus")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -349,8 +349,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/checkRoleNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "唯一角色名测试"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "唯一角色名测试"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -363,8 +363,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/checkRoleNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("roleName", "超级管理员"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleName", "超级管理员"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
@@ -377,8 +377,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/checkRoleKeyUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("roleKey", "unique_role_key"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleKey", "unique_role_key"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -391,8 +391,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/checkRoleKeyUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("roleKey", "admin"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleKey", "admin"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
@@ -416,9 +416,9 @@ public class SysRoleControllerTest {
         role.put("deptIds", new String[]{"2", "3", "4"});
 
         mockMvc.perform(post("/system/role/authDataScope")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(role)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(role)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -435,8 +435,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/role/deptTreeData")
-                .header("Authorization", "Bearer " + token)
-                .param("id", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -453,8 +453,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/authUser/allocatedList")
-                .header("Authorization", "Bearer " + token)
-                .param("roleId", "1"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -467,8 +467,8 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/authUser/unallocatedList")
-                .header("Authorization", "Bearer " + token)
-                .param("roleId", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -481,9 +481,9 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/authUser/cancel")
-                .header("Authorization", "Bearer " + token)
-                .param("userId", "2")
-                .param("roleId", "2"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("userId", "2")
+                        .param("roleId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -496,9 +496,9 @@ public class SysRoleControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/role/authUser/selectAll")
-                .header("Authorization", "Bearer " + token)
-                .param("roleId", "2")
-                .param("userIds", "3"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("roleId", "2")
+                        .param("userIds", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));

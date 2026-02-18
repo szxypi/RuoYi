@@ -45,8 +45,8 @@ public class SysMenuControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -62,7 +62,7 @@ public class SysMenuControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(get("/system/menu/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -84,15 +84,15 @@ public class SysMenuControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/menu/add")
-                .header("Authorization", "Bearer " + token)
-                .param("menuName", "测试新增目录")
-                .param("parentId", "0")
-                .param("orderNum", "99")
-                .param("menuType", "M")
-                .param("visible", "0")
-                .param("url", "#")
-                .param("icon", "test")
-                .param("status", "0"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("menuName", "测试新增目录")
+                        .param("parentId", "0")
+                        .param("orderNum", "99")
+                        .param("menuType", "M")
+                        .param("visible", "0")
+                        .param("url", "#")
+                        .param("icon", "test")
+                        .param("status", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -105,16 +105,16 @@ public class SysMenuControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/menu/edit")
-                .header("Authorization", "Bearer " + token)
-                .param("id", ROLE_MENU_ID)
-                .param("menuName", "修改后的角色管理")
-                .param("parentId", SYSTEM_MENU_ID)
-                .param("orderNum", "2")
-                .param("menuType", "C")
-                .param("visible", "0")
-                .param("url", "/system/role")
-                .param("perms", "system:role:list")
-                .param("status", "0"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", ROLE_MENU_ID)
+                        .param("menuName", "修改后的角色管理")
+                        .param("parentId", SYSTEM_MENU_ID)
+                        .param("orderNum", "2")
+                        .param("menuType", "C")
+                        .param("visible", "0")
+                        .param("url", "/system/role")
+                        .param("perms", "system:role:list")
+                        .param("status", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -127,7 +127,7 @@ public class SysMenuControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(delete("/system/menu/" + SYSTEM_MENU_ID)
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(301));
@@ -140,9 +140,9 @@ public class SysMenuControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(post("/system/menu/checkMenuNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("menuName", "唯一菜单名测试")
-                .param("parentId", SYSTEM_MENU_ID))
+                        .header("Authorization", "Bearer " + token)
+                        .param("menuName", "唯一菜单名测试")
+                        .param("parentId", SYSTEM_MENU_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -155,8 +155,8 @@ public class SysMenuControllerTest {
         String token = login("admin", "admin123");
 
         mockMvc.perform(get("/system/menu/roleMenuTreeData")
-                .header("Authorization", "Bearer " + token)
-                .param("id", "1"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("id", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());

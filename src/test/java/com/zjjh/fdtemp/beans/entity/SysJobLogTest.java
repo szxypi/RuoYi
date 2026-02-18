@@ -153,7 +153,7 @@ class SysJobLogTest {
         assertNotNull(jobLog.getStartTime());
         assertNotNull(jobLog.getEndTime());
         assertTrue(jobLog.getEndTime().after(jobLog.getStartTime()) ||
-                   jobLog.getEndTime().equals(jobLog.getStartTime()));
+                jobLog.getEndTime().equals(jobLog.getStartTime()));
         assertEquals(Constants.SUCCESS, jobLog.getStatus());
         assertNull(jobLog.getExceptionInfo());
     }

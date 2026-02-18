@@ -2,44 +2,63 @@ package com.zjjh.fdtemp.constants;
 
 /**
  * 用户常量信息
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public class UserConstants
-{
+public class UserConstants {
     /**
      * 平台内系统用户的唯一标志
      */
     public static final String SYS_USER = "SYS_USER";
 
-    /** 正常状态 */
+    /**
+     * 正常状态
+     */
     public static final String NORMAL = "0";
 
-    /** 异常状态 */
+    /**
+     * 异常状态
+     */
     public static final String EXCEPTION = "1";
 
-    /** 用户封禁状态 */
+    /**
+     * 用户封禁状态
+     */
     public static final String USER_DISABLE = "1";
 
-    /** 角色正常状态 */
+    /**
+     * 角色正常状态
+     */
     public static final String ROLE_NORMAL = "0";
 
-    /** 角色封禁状态 */
+    /**
+     * 角色封禁状态
+     */
     public static final String ROLE_DISABLE = "1";
 
-    /** 部门正常状态 */
+    /**
+     * 部门正常状态
+     */
     public static final String DEPT_NORMAL = "0";
 
-    /** 部门停用状态 */
+    /**
+     * 部门停用状态
+     */
     public static final String DEPT_DISABLE = "1";
 
-    /** 字典正常状态 */
+    /**
+     * 字典正常状态
+     */
     public static final String DICT_NORMAL = "0";
 
-    /** 是否为系统默认（是） */
+    /**
+     * 是否为系统默认（是）
+     */
     public static final String YES = "Y";
-    
-    /** 是否唯一的返回标识 */
+
+    /**
+     * 是否唯一的返回标识
+     */
     public final static boolean UNIQUE = true;
     public final static boolean NOT_UNIQUE = false;
 

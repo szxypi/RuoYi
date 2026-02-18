@@ -1,38 +1,24 @@
 package com.zjjh.fdtemp.common.exception;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
+import com.zjjh.fdtemp.common.exception.base.BaseException;
+import com.zjjh.fdtemp.common.exception.file.*;
+import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidFlashExtensionException;
+import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidImageExtensionException;
+import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidMediaExtensionException;
+import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidVideoExtensionException;
+import com.zjjh.fdtemp.common.exception.job.TaskException;
+import com.zjjh.fdtemp.common.exception.user.*;
+import com.zjjh.fdtemp.common.utils.MessageUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.zjjh.fdtemp.common.exception.base.BaseException;
-import com.zjjh.fdtemp.common.exception.file.FileException;
-import com.zjjh.fdtemp.common.exception.file.FileNameLengthLimitExceededException;
-import com.zjjh.fdtemp.common.exception.file.FileSizeLimitExceededException;
-import com.zjjh.fdtemp.common.exception.file.FileUploadException;
-import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException;
-import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidFlashExtensionException;
-import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidImageExtensionException;
-import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidMediaExtensionException;
-import com.zjjh.fdtemp.common.exception.file.InvalidExtensionException.InvalidVideoExtensionException;
-import com.zjjh.fdtemp.common.exception.job.TaskException;
-import com.zjjh.fdtemp.common.exception.user.BlackListException;
-import com.zjjh.fdtemp.common.exception.user.CaptchaException;
-import com.zjjh.fdtemp.common.exception.user.RoleBlockedException;
-import com.zjjh.fdtemp.common.exception.user.UserBlockedException;
-import com.zjjh.fdtemp.common.exception.user.UserDeleteException;
-import com.zjjh.fdtemp.common.exception.user.UserException;
-import com.zjjh.fdtemp.common.exception.user.UserNotExistsException;
-import com.zjjh.fdtemp.common.exception.user.UserPasswordNotMatchException;
-import com.zjjh.fdtemp.common.exception.user.UserPasswordRetryLimitCountException;
-import com.zjjh.fdtemp.common.exception.user.UserPasswordRetryLimitExceedException;
-import com.zjjh.fdtemp.common.utils.MessageUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,14 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * 所有异常类的单元测试
  */
 @ExtendWith(MockitoExtension.class)
-class AllExceptionsTest
-{
+class AllExceptionsTest {
     // ==================== BaseException ====================
 
     @Test
-    void testBaseException_fullConstructor()
-    {
-        Object[] args = new Object[] { "arg1", "arg2" };
+    void testBaseException_fullConstructor() {
+        Object[] args = new Object[]{"arg1", "arg2"};
         BaseException ex = new BaseException("testModule", "test.code", args, "default msg");
 
         assertEquals("testModule", ex.getModule());
@@ -57,9 +41,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_moduleCodeArgs()
-    {
-        Object[] args = new Object[] { "a" };
+    void testBaseException_moduleCodeArgs() {
+        Object[] args = new Object[]{"a"};
         BaseException ex = new BaseException("mod", "code1", args);
 
         assertEquals("mod", ex.getModule());
@@ -69,8 +52,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_moduleDefaultMessage()
-    {
+    void testBaseException_moduleDefaultMessage() {
         BaseException ex = new BaseException("mod", "some default");
 
         assertEquals("mod", ex.getModule());
@@ -80,9 +62,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_codeArgs()
-    {
-        Object[] args = new Object[] { 1 };
+    void testBaseException_codeArgs() {
+        Object[] args = new Object[]{1};
         BaseException ex = new BaseException("myCode", args);
 
         assertNull(ex.getModule());
@@ -92,8 +73,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_defaultMessageOnly()
-    {
+    void testBaseException_defaultMessageOnly() {
         BaseException ex = new BaseException("just a message");
 
         assertNull(ex.getModule());
@@ -103,10 +83,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_getMessage_withCode_messageResolved()
-    {
-        try (MockedStatic<MessageUtils> mocked = Mockito.mockStatic(MessageUtils.class))
-        {
+    void testBaseException_getMessage_withCode_messageResolved() {
+        try (MockedStatic<MessageUtils> mocked = Mockito.mockStatic(MessageUtils.class)) {
             mocked.when(() -> MessageUtils.message("test.code", (Object[]) null))
                     .thenReturn("resolved message");
 
@@ -116,10 +94,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_getMessage_withCode_messageNull_fallsBackToDefault()
-    {
-        try (MockedStatic<MessageUtils> mocked = Mockito.mockStatic(MessageUtils.class))
-        {
+    void testBaseException_getMessage_withCode_messageNull_fallsBackToDefault() {
+        try (MockedStatic<MessageUtils> mocked = Mockito.mockStatic(MessageUtils.class)) {
             mocked.when(() -> MessageUtils.message("test.code", (Object[]) null))
                     .thenReturn(null);
 
@@ -129,29 +105,25 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBaseException_getMessage_noCode_returnsDefaultMessage()
-    {
+    void testBaseException_getMessage_noCode_returnsDefaultMessage() {
         BaseException ex = new BaseException(null, null, null, "default only");
         assertEquals("default only", ex.getMessage());
     }
 
     @Test
-    void testBaseException_getMessage_noCode_emptyCode_returnsDefaultMessage()
-    {
+    void testBaseException_getMessage_noCode_emptyCode_returnsDefaultMessage() {
         BaseException ex = new BaseException(null, "", null, "default only");
         assertEquals("default only", ex.getMessage());
     }
 
     @Test
-    void testBaseException_getMessage_noCodeNoDefault_returnsNull()
-    {
+    void testBaseException_getMessage_noCodeNoDefault_returnsNull() {
         BaseException ex = new BaseException(null, null, null, null);
         assertNull(ex.getMessage());
     }
 
     @Test
-    void testBaseException_isRuntimeException()
-    {
+    void testBaseException_isRuntimeException() {
         BaseException ex = new BaseException("msg");
         assertInstanceOf(RuntimeException.class, ex);
     }
@@ -159,23 +131,20 @@ class AllExceptionsTest
     // ==================== ServiceException ====================
 
     @Test
-    void testServiceException_noArgConstructor()
-    {
+    void testServiceException_noArgConstructor() {
         ServiceException ex = new ServiceException();
         assertNull(ex.getMessage());
         assertNull(ex.getDetailMessage());
     }
 
     @Test
-    void testServiceException_messageConstructor()
-    {
+    void testServiceException_messageConstructor() {
         ServiceException ex = new ServiceException("error occurred");
         assertEquals("error occurred", ex.getMessage());
     }
 
     @Test
-    void testServiceException_setDetailMessage()
-    {
+    void testServiceException_setDetailMessage() {
         ServiceException ex = new ServiceException("msg");
         ServiceException returned = ex.setDetailMessage("detail info");
 
@@ -184,8 +153,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testServiceException_setMessage()
-    {
+    void testServiceException_setMessage() {
         ServiceException ex = new ServiceException();
         ServiceException returned = ex.setMessage("new message");
 
@@ -194,37 +162,32 @@ class AllExceptionsTest
     }
 
     @Test
-    void testServiceException_isRuntimeException()
-    {
+    void testServiceException_isRuntimeException() {
         assertInstanceOf(RuntimeException.class, new ServiceException());
     }
 
     @Test
-    void testServiceException_isFinal()
-    {
+    void testServiceException_isFinal() {
         assertTrue(java.lang.reflect.Modifier.isFinal(ServiceException.class.getModifiers()));
     }
 
     // ==================== GlobalException ====================
 
     @Test
-    void testGlobalException_noArgConstructor()
-    {
+    void testGlobalException_noArgConstructor() {
         GlobalException ex = new GlobalException();
         assertNull(ex.getMessage());
         assertNull(ex.getDetailMessage());
     }
 
     @Test
-    void testGlobalException_messageConstructor()
-    {
+    void testGlobalException_messageConstructor() {
         GlobalException ex = new GlobalException("global error");
         assertEquals("global error", ex.getMessage());
     }
 
     @Test
-    void testGlobalException_setDetailMessage()
-    {
+    void testGlobalException_setDetailMessage() {
         GlobalException ex = new GlobalException("msg");
         GlobalException returned = ex.setDetailMessage("detail");
 
@@ -233,8 +196,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testGlobalException_setMessage()
-    {
+    void testGlobalException_setMessage() {
         GlobalException ex = new GlobalException();
         GlobalException returned = ex.setMessage("updated");
 
@@ -243,16 +205,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testGlobalException_isRuntimeException()
-    {
+    void testGlobalException_isRuntimeException() {
         assertInstanceOf(RuntimeException.class, new GlobalException());
     }
 
     // ==================== UtilException ====================
 
     @Test
-    void testUtilException_throwableConstructor()
-    {
+    void testUtilException_throwableConstructor() {
         Throwable cause = new RuntimeException("root cause");
         UtilException ex = new UtilException(cause);
 
@@ -261,16 +221,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUtilException_messageConstructor()
-    {
+    void testUtilException_messageConstructor() {
         UtilException ex = new UtilException("util error");
         assertEquals("util error", ex.getMessage());
         assertNull(ex.getCause());
     }
 
     @Test
-    void testUtilException_messageAndThrowableConstructor()
-    {
+    void testUtilException_messageAndThrowableConstructor() {
         Throwable cause = new IllegalArgumentException("bad arg");
         UtilException ex = new UtilException("wrapper msg", cause);
 
@@ -279,17 +237,15 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUtilException_isRuntimeException()
-    {
+    void testUtilException_isRuntimeException() {
         assertInstanceOf(RuntimeException.class, new UtilException("test"));
     }
 
     // ==================== FileException ====================
 
     @Test
-    void testFileException_constructor()
-    {
-        Object[] args = new Object[] { "file.txt" };
+    void testFileException_constructor() {
+        Object[] args = new Object[]{"file.txt"};
         FileException ex = new FileException("file.code", args);
 
         assertEquals("file", ex.getModule());
@@ -299,68 +255,60 @@ class AllExceptionsTest
     }
 
     @Test
-    void testFileException_extendsBaseException()
-    {
+    void testFileException_extendsBaseException() {
         assertInstanceOf(BaseException.class, new FileException("code", null));
     }
 
     // ==================== FileSizeLimitExceededException ====================
 
     @Test
-    void testFileSizeLimitExceededException_constructor()
-    {
+    void testFileSizeLimitExceededException_constructor() {
         FileSizeLimitExceededException ex = new FileSizeLimitExceededException(50L);
 
         assertEquals("file", ex.getModule());
         assertEquals("upload.exceed.maxSize", ex.getCode());
-        assertArrayEquals(new Object[] { 50L }, ex.getArgs());
+        assertArrayEquals(new Object[]{50L}, ex.getArgs());
     }
 
     @Test
-    void testFileSizeLimitExceededException_extendsFileException()
-    {
+    void testFileSizeLimitExceededException_extendsFileException() {
         assertInstanceOf(FileException.class, new FileSizeLimitExceededException(100L));
     }
 
     // ==================== FileNameLengthLimitExceededException ====================
 
     @Test
-    void testFileNameLengthLimitExceededException_constructor()
-    {
+    void testFileNameLengthLimitExceededException_constructor() {
         FileNameLengthLimitExceededException ex = new FileNameLengthLimitExceededException(255);
 
         assertEquals("file", ex.getModule());
         assertEquals("upload.filename.exceed.length", ex.getCode());
-        assertArrayEquals(new Object[] { 255 }, ex.getArgs());
+        assertArrayEquals(new Object[]{255}, ex.getArgs());
     }
 
     @Test
-    void testFileNameLengthLimitExceededException_extendsFileException()
-    {
+    void testFileNameLengthLimitExceededException_extendsFileException() {
         assertInstanceOf(FileException.class, new FileNameLengthLimitExceededException(100));
     }
 
     // ==================== FileUploadException ====================
 
     @Test
-    void testFileUploadException_noArgConstructor()
-    {
+    void testFileUploadException_noArgConstructor() {
         FileUploadException ex = new FileUploadException();
         assertNull(ex.getMessage());
         assertNull(ex.getCause());
     }
 
     @Test
-    void testFileUploadException_messageConstructor()
-    {
+    void testFileUploadException_messageConstructor() {
         FileUploadException ex = new FileUploadException("upload failed");
         assertEquals("upload failed", ex.getMessage());
         assertNull(ex.getCause());
     }
 
     @Test
-    void testFileUploadException_messageAndCauseConstructor()
-    {
+    void testFileUploadException_messageAndCauseConstructor() {
         Throwable cause = new RuntimeException("io error");
         FileUploadException ex = new FileUploadException("upload failed", cause);
 
@@ -369,14 +317,12 @@ class AllExceptionsTest
     }
 
     @Test
-    void testFileUploadException_isException()
-    {
+    void testFileUploadException_isException() {
         assertInstanceOf(Exception.class, new FileUploadException());
     }
 
     @Test
-    void testFileUploadException_printStackTrace_printStream_withCause()
-    {
+    void testFileUploadException_printStackTrace_printStream_withCause() {
         Throwable cause = new RuntimeException("io error");
         FileUploadException ex = new FileUploadException("upload failed", cause);
 
@@ -392,8 +338,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testFileUploadException_printStackTrace_printStream_withoutCause()
-    {
+    void testFileUploadException_printStackTrace_printStream_withoutCause() {
         FileUploadException ex = new FileUploadException("no cause");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -407,8 +352,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testFileUploadException_printStackTrace_printWriter_withCause()
-    {
+    void testFileUploadException_printStackTrace_printWriter_withCause() {
         Throwable cause = new RuntimeException("writer cause");
         FileUploadException ex = new FileUploadException("writer fail", cause);
 
@@ -424,8 +368,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testFileUploadException_printStackTrace_printWriter_withoutCause()
-    {
+    void testFileUploadException_printStackTrace_printWriter_withoutCause() {
         FileUploadException ex = new FileUploadException("writer no cause");
 
         StringWriter sw = new StringWriter();
@@ -441,9 +384,8 @@ class AllExceptionsTest
     // ==================== InvalidExtensionException ====================
 
     @Test
-    void testInvalidExtensionException_constructor()
-    {
-        String[] allowed = new String[] { "jpg", "png" };
+    void testInvalidExtensionException_constructor() {
+        String[] allowed = new String[]{"jpg", "png"};
         InvalidExtensionException ex = new InvalidExtensionException(allowed, "exe", "malware.exe");
 
         assertArrayEquals(allowed, ex.getAllowedExtension());
@@ -455,16 +397,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testInvalidExtensionException_extendsFileUploadException()
-    {
+    void testInvalidExtensionException_extendsFileUploadException() {
         assertInstanceOf(FileUploadException.class,
-                new InvalidExtensionException(new String[] { "txt" }, "bin", "test.bin"));
+                new InvalidExtensionException(new String[]{"txt"}, "bin", "test.bin"));
     }
 
     @Test
-    void testInvalidImageExtensionException()
-    {
-        String[] allowed = new String[] { "jpg", "png" };
+    void testInvalidImageExtensionException() {
+        String[] allowed = new String[]{"jpg", "png"};
         InvalidImageExtensionException ex = new InvalidImageExtensionException(allowed, "bmp", "photo.bmp");
 
         assertInstanceOf(InvalidExtensionException.class, ex);
@@ -474,9 +414,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testInvalidFlashExtensionException()
-    {
-        String[] allowed = new String[] { "swf" };
+    void testInvalidFlashExtensionException() {
+        String[] allowed = new String[]{"swf"};
         InvalidFlashExtensionException ex = new InvalidFlashExtensionException(allowed, "exe", "flash.exe");
 
         assertInstanceOf(InvalidExtensionException.class, ex);
@@ -486,9 +425,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testInvalidMediaExtensionException()
-    {
-        String[] allowed = new String[] { "mp3", "wav" };
+    void testInvalidMediaExtensionException() {
+        String[] allowed = new String[]{"mp3", "wav"};
         InvalidMediaExtensionException ex = new InvalidMediaExtensionException(allowed, "flac", "song.flac");
 
         assertInstanceOf(InvalidExtensionException.class, ex);
@@ -498,9 +436,8 @@ class AllExceptionsTest
     }
 
     @Test
-    void testInvalidVideoExtensionException()
-    {
-        String[] allowed = new String[] { "mp4", "avi" };
+    void testInvalidVideoExtensionException() {
+        String[] allowed = new String[]{"mp4", "avi"};
         InvalidVideoExtensionException ex = new InvalidVideoExtensionException(allowed, "mkv", "video.mkv");
 
         assertInstanceOf(InvalidExtensionException.class, ex);
@@ -512,8 +449,7 @@ class AllExceptionsTest
     // ==================== TaskException ====================
 
     @Test
-    void testTaskException_twoArgConstructor()
-    {
+    void testTaskException_twoArgConstructor() {
         TaskException ex = new TaskException("task failed", TaskException.Code.TASK_EXISTS);
 
         assertEquals("task failed", ex.getMessage());
@@ -522,8 +458,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testTaskException_threeArgConstructor()
-    {
+    void testTaskException_threeArgConstructor() {
         Exception nested = new RuntimeException("nested");
         TaskException ex = new TaskException("task error", TaskException.Code.CONFIG_ERROR, nested);
 
@@ -533,15 +468,13 @@ class AllExceptionsTest
     }
 
     @Test
-    void testTaskException_isException()
-    {
+    void testTaskException_isException() {
         assertInstanceOf(Exception.class,
                 new TaskException("msg", TaskException.Code.UNKNOWN));
     }
 
     @Test
-    void testTaskException_allCodeEnumValues()
-    {
+    void testTaskException_allCodeEnumValues() {
         TaskException.Code[] values = TaskException.Code.values();
         assertEquals(6, values.length);
 
@@ -556,9 +489,8 @@ class AllExceptionsTest
     // ==================== UserException ====================
 
     @Test
-    void testUserException_constructor()
-    {
-        Object[] args = new Object[] { "admin" };
+    void testUserException_constructor() {
+        Object[] args = new Object[]{"admin"};
         UserException ex = new UserException("user.code", args);
 
         assertEquals("user", ex.getModule());
@@ -568,16 +500,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUserException_extendsBaseException()
-    {
+    void testUserException_extendsBaseException() {
         assertInstanceOf(BaseException.class, new UserException("code", null));
     }
 
     // ==================== BlackListException ====================
 
     @Test
-    void testBlackListException_constructor()
-    {
+    void testBlackListException_constructor() {
         BlackListException ex = new BlackListException();
 
         assertEquals("user", ex.getModule());
@@ -586,16 +516,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testBlackListException_extendsUserException()
-    {
+    void testBlackListException_extendsUserException() {
         assertInstanceOf(UserException.class, new BlackListException());
     }
 
     // ==================== CaptchaException ====================
 
     @Test
-    void testCaptchaException_constructor()
-    {
+    void testCaptchaException_constructor() {
         CaptchaException ex = new CaptchaException();
 
         assertEquals("user", ex.getModule());
@@ -604,16 +532,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testCaptchaException_extendsUserException()
-    {
+    void testCaptchaException_extendsUserException() {
         assertInstanceOf(UserException.class, new CaptchaException());
     }
 
     // ==================== UserBlockedException ====================
 
     @Test
-    void testUserBlockedException_constructor()
-    {
+    void testUserBlockedException_constructor() {
         UserBlockedException ex = new UserBlockedException();
 
         assertEquals("user", ex.getModule());
@@ -622,16 +548,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUserBlockedException_extendsUserException()
-    {
+    void testUserBlockedException_extendsUserException() {
         assertInstanceOf(UserException.class, new UserBlockedException());
     }
 
     // ==================== UserDeleteException ====================
 
     @Test
-    void testUserDeleteException_constructor()
-    {
+    void testUserDeleteException_constructor() {
         UserDeleteException ex = new UserDeleteException();
 
         assertEquals("user", ex.getModule());
@@ -640,16 +564,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUserDeleteException_extendsUserException()
-    {
+    void testUserDeleteException_extendsUserException() {
         assertInstanceOf(UserException.class, new UserDeleteException());
     }
 
     // ==================== UserNotExistsException ====================
 
     @Test
-    void testUserNotExistsException_constructor()
-    {
+    void testUserNotExistsException_constructor() {
         UserNotExistsException ex = new UserNotExistsException();
 
         assertEquals("user", ex.getModule());
@@ -658,16 +580,14 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUserNotExistsException_extendsUserException()
-    {
+    void testUserNotExistsException_extendsUserException() {
         assertInstanceOf(UserException.class, new UserNotExistsException());
     }
 
     // ==================== UserPasswordNotMatchException ====================
 
     @Test
-    void testUserPasswordNotMatchException_constructor()
-    {
+    void testUserPasswordNotMatchException_constructor() {
         UserPasswordNotMatchException ex = new UserPasswordNotMatchException();
 
         assertEquals("user", ex.getModule());
@@ -676,52 +596,46 @@ class AllExceptionsTest
     }
 
     @Test
-    void testUserPasswordNotMatchException_extendsUserException()
-    {
+    void testUserPasswordNotMatchException_extendsUserException() {
         assertInstanceOf(UserException.class, new UserPasswordNotMatchException());
     }
 
     // ==================== UserPasswordRetryLimitExceedException ====================
 
     @Test
-    void testUserPasswordRetryLimitExceedException_constructor()
-    {
+    void testUserPasswordRetryLimitExceedException_constructor() {
         UserPasswordRetryLimitExceedException ex = new UserPasswordRetryLimitExceedException(5);
 
         assertEquals("user", ex.getModule());
         assertEquals("user.password.retry.limit.exceed", ex.getCode());
-        assertArrayEquals(new Object[] { 5 }, ex.getArgs());
+        assertArrayEquals(new Object[]{5}, ex.getArgs());
     }
 
     @Test
-    void testUserPasswordRetryLimitExceedException_extendsUserException()
-    {
+    void testUserPasswordRetryLimitExceedException_extendsUserException() {
         assertInstanceOf(UserException.class, new UserPasswordRetryLimitExceedException(3));
     }
 
     // ==================== UserPasswordRetryLimitCountException ====================
 
     @Test
-    void testUserPasswordRetryLimitCountException_constructor()
-    {
+    void testUserPasswordRetryLimitCountException_constructor() {
         UserPasswordRetryLimitCountException ex = new UserPasswordRetryLimitCountException(3);
 
         assertEquals("user", ex.getModule());
         assertEquals("user.password.retry.limit.count", ex.getCode());
-        assertArrayEquals(new Object[] { 3 }, ex.getArgs());
+        assertArrayEquals(new Object[]{3}, ex.getArgs());
     }
 
     @Test
-    void testUserPasswordRetryLimitCountException_extendsUserException()
-    {
+    void testUserPasswordRetryLimitCountException_extendsUserException() {
         assertInstanceOf(UserException.class, new UserPasswordRetryLimitCountException(1));
     }
 
     // ==================== RoleBlockedException ====================
 
     @Test
-    void testRoleBlockedException_constructor()
-    {
+    void testRoleBlockedException_constructor() {
         RoleBlockedException ex = new RoleBlockedException();
 
         assertEquals("user", ex.getModule());
@@ -730,8 +644,7 @@ class AllExceptionsTest
     }
 
     @Test
-    void testRoleBlockedException_extendsUserException()
-    {
+    void testRoleBlockedException_extendsUserException() {
         assertInstanceOf(UserException.class, new RoleBlockedException());
     }
 }

@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
@@ -213,8 +214,8 @@ class SysConfigServiceImplTest {
         SysConfig config2 = createTestConfig("2", "配置2", "key2", "value2", "N");
 
         when(configMapper.selectConfig(any(SysConfig.class)))
-            .thenReturn(config1)
-            .thenReturn(config2);
+                .thenReturn(config1)
+                .thenReturn(config2);
         when(configMapper.deleteConfigById(anyString())).thenReturn(1);
 
         assertDoesNotThrow(() -> configService.deleteConfigByIds("1,2"));

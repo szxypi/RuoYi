@@ -1,17 +1,17 @@
 package com.zjjh.fdtemp.common.utils;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Cache工具类 - 使用ConcurrentHashMap替代ehcache
  *
- * @author ruoyi
+ * @author szx
  */
-public class CacheUtils
-{
-    /** 所有缓存，按cacheName分组 */
+public class CacheUtils {
+    /**
+     * 所有缓存，按cacheName分组
+     */
     private static final ConcurrentHashMap<String, ConcurrentHashMap<String, Object>> CACHES = new ConcurrentHashMap<>();
 
     /**
@@ -20,8 +20,7 @@ public class CacheUtils
      * @param cacheName 缓存名称
      * @return 缓存Map
      */
-    public static ConcurrentHashMap<String, Object> getCache(String cacheName)
-    {
+    public static ConcurrentHashMap<String, Object> getCache(String cacheName) {
         return CACHES.computeIfAbsent(cacheName, k -> new ConcurrentHashMap<>());
     }
 
@@ -29,13 +28,11 @@ public class CacheUtils
      * 写入缓存
      *
      * @param cacheName 缓存名称
-     * @param key 缓存键
-     * @param value 缓存值
+     * @param key       缓存键
+     * @param value     缓存值
      */
-    public static void put(String cacheName, String key, Object value)
-    {
-        if (value != null)
-        {
+    public static void put(String cacheName, String key, Object value) {
+        if (value != null) {
             getCache(cacheName).put(key, value);
         }
     }
@@ -44,14 +41,12 @@ public class CacheUtils
      * 获取缓存
      *
      * @param cacheName 缓存名称
-     * @param key 缓存键
+     * @param key       缓存键
      * @return 缓存值
      */
-    public static Object get(String cacheName, String key)
-    {
+    public static Object get(String cacheName, String key) {
         ConcurrentHashMap<String, Object> cache = CACHES.get(cacheName);
-        if (cache != null)
-        {
+        if (cache != null) {
             return cache.get(key);
         }
         return null;
@@ -61,13 +56,11 @@ public class CacheUtils
      * 删除缓存
      *
      * @param cacheName 缓存名称
-     * @param key 缓存键
+     * @param key       缓存键
      */
-    public static void remove(String cacheName, String key)
-    {
+    public static void remove(String cacheName, String key) {
         ConcurrentHashMap<String, Object> cache = CACHES.get(cacheName);
-        if (cache != null)
-        {
+        if (cache != null) {
             cache.remove(key);
         }
     }
@@ -77,8 +70,7 @@ public class CacheUtils
      *
      * @param cacheName 缓存名称
      */
-    public static void removeAll(String cacheName)
-    {
+    public static void removeAll(String cacheName) {
         CACHES.remove(cacheName);
     }
 
@@ -87,8 +79,7 @@ public class CacheUtils
      *
      * @return 缓存名称数组
      */
-    public static String[] getCacheNames()
-    {
+    public static String[] getCacheNames() {
         Set<String> names = CACHES.keySet();
         return names.toArray(new String[0]);
     }
@@ -99,11 +90,9 @@ public class CacheUtils
      * @param cacheName 缓存名称
      * @return 键名集合
      */
-    public static Set<String> getCacheKeys(String cacheName)
-    {
+    public static Set<String> getCacheKeys(String cacheName) {
         ConcurrentHashMap<String, Object> cache = CACHES.get(cacheName);
-        if (cache != null)
-        {
+        if (cache != null) {
             return cache.keySet();
         }
         return Set.of();

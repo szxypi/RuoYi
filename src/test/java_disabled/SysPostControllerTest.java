@@ -56,8 +56,8 @@ public class SysPostControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
@@ -78,9 +78,9 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/list")
-                .header("Authorization", "Bearer " + token)
-                .param("pageNum", "1")
-                .param("pageSize", "10"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("pageNum", "1")
+                        .param("pageSize", "10"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray())
@@ -94,8 +94,8 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/list")
-                .header("Authorization", "Bearer " + token)
-                .param("postName", "董事长"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postName", "董事长"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -108,8 +108,8 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/list")
-                .header("Authorization", "Bearer " + token)
-                .param("postCode", "ceo"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postCode", "ceo"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rows").isArray());
@@ -141,9 +141,9 @@ public class SysPostControllerTest {
         post.put("status", "0");
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -161,9 +161,9 @@ public class SysPostControllerTest {
         post.put("postSort", "99");
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -181,9 +181,9 @@ public class SysPostControllerTest {
         post.put("postSort", "99");
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -201,9 +201,9 @@ public class SysPostControllerTest {
         post.put("postSort", "99");
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -227,9 +227,9 @@ public class SysPostControllerTest {
         post.put("status", "0");
 
         mockMvc.perform(post("/system/post/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -248,9 +248,9 @@ public class SysPostControllerTest {
         post.put("postSort", "2");
 
         mockMvc.perform(post("/system/post/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -269,9 +269,9 @@ public class SysPostControllerTest {
         post.put("postSort", "2");
 
         mockMvc.perform(post("/system/post/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -291,9 +291,9 @@ public class SysPostControllerTest {
         post.put("status", "1"); // 停用
 
         mockMvc.perform(post("/system/post/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -316,15 +316,15 @@ public class SysPostControllerTest {
         post.put("postSort", "99");
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post)))
                 .andExpect(status().isOk());
 
         // 查询岗位ID
         MvcResult result = mockMvc.perform(post("/system/post/list")
-                .header("Authorization", "Bearer " + token)
-                .param("postName", "待删除岗位"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postName", "待删除岗位"))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
@@ -333,8 +333,8 @@ public class SysPostControllerTest {
 
         // 删除岗位
         mockMvc.perform(post("/system/post/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", postId))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", postId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -348,8 +348,8 @@ public class SysPostControllerTest {
 
         // 董事长岗位已分配给用户
         mockMvc.perform(post("/system/post/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", CEO_POST_ID))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", CEO_POST_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -373,20 +373,20 @@ public class SysPostControllerTest {
         post2.put("postSort", "99");
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post1)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post1)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/system/post/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post2)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(post2)))
                 .andExpect(status().isOk());
 
         // 查询岗位ID
         MvcResult result = mockMvc.perform(post("/system/post/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
@@ -407,8 +407,8 @@ public class SysPostControllerTest {
 
         // 批量删除
         mockMvc.perform(post("/system/post/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", id1 + "," + id2))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", id1 + "," + id2))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -425,8 +425,8 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/checkPostNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("postName", "唯一岗位名测试"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postName", "唯一岗位名测试"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -439,8 +439,8 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/checkPostNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("postName", "董事长"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postName", "董事长"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
@@ -453,8 +453,8 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/checkPostCodeUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("postCode", "unique_post_code"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postCode", "unique_post_code"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -467,8 +467,8 @@ public class SysPostControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/post/checkPostCodeUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("postCode", "ceo"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("postCode", "ceo"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
@@ -485,7 +485,7 @@ public class SysPostControllerTest {
         String token = login(NORMAL_USERNAME, NORMAL_PASSWORD);
 
         mockMvc.perform(post("/system/post/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -497,8 +497,8 @@ public class SysPostControllerTest {
         String token = login(NORMAL_USERNAME, NORMAL_PASSWORD);
 
         mockMvc.perform(post("/system/post/remove")
-                .header("Authorization", "Bearer " + token)
-                .param("ids", "4"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("ids", "4"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));

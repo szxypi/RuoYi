@@ -1,13 +1,13 @@
 package com.zjjh.fdtemp.common.utils.quartz;
 
 import com.zjjh.fdtemp.beans.entity.SysJob;
-import com.zjjh.fdtemp.beans.entity.SysJobLog;
+import com.zjjh.fdtemp.common.utils.JobInvokeUtil;
 import com.zjjh.fdtemp.common.utils.QuartzDisallowConcurrentExecution;
 import com.zjjh.fdtemp.common.utils.QuartzJobExecution;
-import com.zjjh.fdtemp.common.utils.JobInvokeUtil;
+import com.zjjh.fdtemp.common.utils.ScheduleUtils;
+import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
 import com.zjjh.fdtemp.constants.ScheduleConstants;
 import com.zjjh.fdtemp.service.SysJobLogService;
-import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
@@ -74,12 +74,15 @@ class QuartzDisallowConcurrentExecutionTest {
         when(context.getMergedJobDataMap()).thenReturn(jobDataMap);
 
         try (MockedStatic<JobInvokeUtil> jobInvokeUtilMock = mockStatic(JobInvokeUtil.class);
-             MockedStatic<SpringUtils> springUtilsMock = mockStatic(SpringUtils.class)) {
+             MockedStatic<SpringUtils> springUtilsMock = mockStatic(SpringUtils.class);
+             MockedStatic<ScheduleUtils> scheduleUtilsMock = mockStatic(ScheduleUtils.class)) {
 
             jobInvokeUtilMock.when(() -> JobInvokeUtil.invokeMethod(any(SysJob.class)))
                     .thenAnswer(invocation -> null);
             springUtilsMock.when(() -> SpringUtils.getBean(SysJobLogService.class))
                     .thenReturn(jobLogService);
+            scheduleUtilsMock.when(() -> ScheduleUtils.whiteList(any(String.class)))
+                    .thenReturn(true);
 
             quartzJob.execute(context);
 
@@ -95,18 +98,21 @@ class QuartzDisallowConcurrentExecutionTest {
         when(context.getMergedJobDataMap()).thenReturn(jobDataMap);
 
         try (MockedStatic<JobInvokeUtil> jobInvokeUtilMock = mockStatic(JobInvokeUtil.class);
-             MockedStatic<SpringUtils> springUtilsMock = mockStatic(SpringUtils.class)) {
+             MockedStatic<SpringUtils> springUtilsMock = mockStatic(SpringUtils.class);
+             MockedStatic<ScheduleUtils> scheduleUtilsMock = mockStatic(ScheduleUtils.class)) {
 
             jobInvokeUtilMock.when(() -> JobInvokeUtil.invokeMethod(any(SysJob.class)))
                     .thenAnswer(invocation -> null);
             springUtilsMock.when(() -> SpringUtils.getBean(SysJobLogService.class))
                     .thenReturn(jobLogService);
+            scheduleUtilsMock.when(() -> ScheduleUtils.whiteList(any(String.class)))
+                    .thenReturn(true);
 
             quartzJob.execute(context);
 
             jobInvokeUtilMock.verify(() -> JobInvokeUtil.invokeMethod(argThat(job ->
-                job.getJobName().equals("禁止并发任务") &&
-                "1".equals(job.getConcurrent())
+                    job.getJobName().equals("禁止并发任务") &&
+                            "1".equals(job.getConcurrent())
             )));
         }
     }
@@ -119,12 +125,15 @@ class QuartzDisallowConcurrentExecutionTest {
         when(context.getMergedJobDataMap()).thenReturn(jobDataMap);
 
         try (MockedStatic<JobInvokeUtil> jobInvokeUtilMock = mockStatic(JobInvokeUtil.class);
-             MockedStatic<SpringUtils> springUtilsMock = mockStatic(SpringUtils.class)) {
+             MockedStatic<SpringUtils> springUtilsMock = mockStatic(SpringUtils.class);
+             MockedStatic<ScheduleUtils> scheduleUtilsMock = mockStatic(ScheduleUtils.class)) {
 
             jobInvokeUtilMock.when(() -> JobInvokeUtil.invokeMethod(any(SysJob.class)))
                     .thenThrow(new RuntimeException("Test exception"));
             springUtilsMock.when(() -> SpringUtils.getBean(SysJobLogService.class))
                     .thenReturn(jobLogService);
+            scheduleUtilsMock.when(() -> ScheduleUtils.whiteList(any(String.class)))
+                    .thenReturn(true);
 
             // 不应该抛出异常
             assertDoesNotThrow(() -> quartzJob.execute(context));
@@ -138,10 +147,10 @@ class QuartzDisallowConcurrentExecutionTest {
     void testDifferenceFromQuartzJobExecution() {
         // QuartzDisallowConcurrentExecution 有禁止并发注解
         assertTrue(QuartzDisallowConcurrentExecution.class.isAnnotationPresent(
-            org.quartz.DisallowConcurrentExecution.class));
+                org.quartz.DisallowConcurrentExecution.class));
 
         // QuartzJobExecution 没有禁止并发注解
         assertFalse(QuartzJobExecution.class.isAnnotationPresent(
-            org.quartz.DisallowConcurrentExecution.class));
+                org.quartz.DisallowConcurrentExecution.class));
     }
 }

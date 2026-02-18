@@ -1,24 +1,26 @@
 package ${packageName}.service.impl;
 
 import java.util.List;
-#if($table.tree)
-import java.util.ArrayList;
-import com.zjjh.fdtemp.common.core.domain.Ztree;
-#end
-#foreach ($column in $columns)
-#if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
-import com.zjjh.fdtemp.common.utils.DateUtils;
-#break
-#end
-#end
+    #if($table.tree)
+    import java.util.ArrayList;
+
+    import com.zjjh.fdtemp.common.core.domain.Ztree;
+    #end
+    #foreach ($column in $columns)
+        #if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
+        import com.zjjh.fdtemp.common.utils.DateUtils;
+            #break
+        #end
+    #end
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-#if($table.sub)
-import java.util.ArrayList;
-import com.zjjh.fdtemp.common.utils.StringUtils;
-import org.springframework.transaction.annotation.Transactional;
-import ${packageName}.domain.${subClassName};
-#end
+    #if($table.sub)
+    import java.util.ArrayList;
+
+    import com.zjjh.fdtemp.common.utils.StringUtils;
+    import org.springframework.transaction.annotation.Transactional;
+    import ${packageName}.domain.${subClassName};
+    #end
 import ${packageName}.dao.${ClassName}Dao;
 import ${packageName}.domain.${ClassName};
 import ${packageName}.service.I${ClassName}Service;
@@ -31,8 +33,7 @@ import com.zjjh.fdtemp.common.core.text.Convert;
  * @date ${datetime}
  */
 @Service
-public class ${ClassName}ServiceImpl implements I${ClassName}Service
-{
+public class ${ClassName}ServiceImpl implements I${ClassName}Service {
     @Autowired
     private ${ClassName}Dao ${className}Dao;
 
@@ -43,8 +44,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @return ${functionName}
      */
     @Override
-    public ${ClassName} select${ClassName}By${pkColumn.capJavaField}(String ${pkColumn.javaField})
-    {
+    public ${ClassName} select${ClassName}By${pkColumn.capJavaField}(String ${pkColumn.javaField}) {
         return ${className}Dao.select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaField});
     }
 
@@ -55,8 +55,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @return ${functionName}
      */
     @Override
-    public List<${ClassName}> select${ClassName}List(${ClassName} ${className})
-    {
+    public List<${ClassName}> select${ClassName}List(${ClassName} ${className}) {
         return ${className}Dao.select${ClassName}List(${className});
     }
 
@@ -66,24 +65,23 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @param ${className} ${functionName}
      * @return 结果
      */
-#if($table.sub)
-    @Transactional
-#end
+        #if($table.sub)
+        @Transactional
+        #end
     @Override
-    public int insert${ClassName}(${ClassName} ${className})
-    {
-#foreach ($column in $columns)
-#if($column.javaField == 'createTime')
-        ${className}.setCreateTime(DateUtils.getNowDate());
-#end
-#end
-#if($table.sub)
-        int rows = ${className}Dao.insert${ClassName}(${className});
-        insert${subClassName}(${className});
-        return rows;
-#else
-        return ${className}Dao.insert${ClassName}(${className});
-#end
+    public int insert${ClassName}(${ClassName} ${className}) {
+        #foreach ($column in $columns)
+            #if($column.javaField == 'createTime')
+                ${className}.setCreateTime(DateUtils.getNowDate());
+            #end
+        #end
+        #if($table.sub)
+            int rows = ${className}Dao.insert${ClassName}(${className});
+            insert${subClassName}(${className});
+            return rows;
+        #else
+            return ${className}Dao.insert${ClassName}(${className});
+        #end
     }
 
     /**
@@ -92,21 +90,21 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @param ${className} ${functionName}
      * @return 结果
      */
-#if($table.sub)
-    @Transactional
-#end
+        #if($table.sub)
+        @Transactional
+        #end
     @Override
-    public int update${ClassName}(${ClassName} ${className})
-    {
-#foreach ($column in $columns)
-#if($column.javaField == 'updateTime')
-        ${className}.setUpdateTime(DateUtils.getNowDate());
-#end
-#end
-#if($table.sub)
-        ${className}Dao.delete${subClassName}By${subTableFkClassName}(${className}.get${pkColumn.capJavaField}());
-        insert${subClassName}(${className});
-#end
+    public int update${ClassName}(${ClassName} ${className}) {
+        #foreach ($column in $columns)
+            #if($column.javaField == 'updateTime')
+                ${className}.setUpdateTime(DateUtils.getNowDate());
+            #end
+        #end
+        #if($table.sub)
+                ${className}Dao.delete${subClassName}By${subTableFkClassName}(${className}.get${pkColumn.capJavaField}())
+            ;
+            insert${subClassName}(${className});
+        #end
         return ${className}Dao.update${ClassName}(${className});
     }
 
@@ -116,15 +114,14 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @param ${pkColumn.javaField}s 需要删除的${functionName}主键
      * @return 结果
      */
-#if($table.sub)
-    @Transactional
-#end
+        #if($table.sub)
+        @Transactional
+        #end
     @Override
-    public int delete${ClassName}By${pkColumn.capJavaField}s(String ${pkColumn.javaField}s)
-    {
-#if($table.sub)
-        ${className}Dao.delete${subClassName}By${subTableFkClassName}s(Convert.toStrArray(${pkColumn.javaField}s));
-#end
+    public int delete${ClassName}By${pkColumn.capJavaField}s(String ${pkColumn.javaField}s) {
+        #if($table.sub)
+                ${className}Dao.delete${subClassName}By${subTableFkClassName}s(Convert.toStrArray(${pkColumn.javaField}s));
+        #end
         return ${className}Dao.delete${ClassName}By${pkColumn.capJavaField}s(Convert.toStrArray(${pkColumn.javaField}s));
     }
 
@@ -134,80 +131,75 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @param ${pkColumn.javaField} ${functionName}主键
      * @return 结果
      */
-#if($table.sub)
-    @Transactional
-#end
+        #if($table.sub)
+        @Transactional
+        #end
     @Override
-    public int delete${ClassName}By${pkColumn.capJavaField}(String ${pkColumn.javaField})
-    {
-#if($table.sub)
-        ${className}Dao.delete${subClassName}By${subTableFkClassName}(${pkColumn.javaField});
-#end
+    public int delete${ClassName}By${pkColumn.capJavaField}(String ${pkColumn.javaField}) {
+        #if($table.sub)
+                ${className}Dao.delete${subClassName}By${subTableFkClassName}(${pkColumn.javaField});
+        #end
         return ${className}Dao.delete${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaField});
     }
-#if($table.tree)
+    #if($table.tree)
 
-    /**
-     * 查询${functionName}树列表
-     *
-     * @return 所有${functionName}信息
-     */
-    @Override
-    public List<Ztree> select${ClassName}Tree()
-    {
-        List<${ClassName}> ${className}List = ${className}Dao.select${ClassName}List(new ${ClassName}());
-        List<Ztree> ztrees = new ArrayList<Ztree>();
-        for (${ClassName} ${className} : ${className}List)
-        {
-            Ztree ztree = new Ztree();
-#if($treeCode.length() > 2 && $treeCode.substring(1,2).matches("[A-Z]"))
-#set($TreeCode=$treeCode)
-#else
-#set($TreeCode=$treeCode.substring(0,1).toUpperCase() + ${treeCode.substring(1)})
-#end
-#if($treeParentCode.length() > 2 && $treeParentCode.substring(1,2).matches("[A-Z]"))
-#set($TreeParentCode=$treeParentCode)
-#else
-#set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
-#end
-#if($treeName.length() > 2 && $treeName.substring(1,2).matches("[A-Z]"))
-#set($TreeName=$treeName)
-#else
-#set($TreeName=$treeName.substring(0,1).toUpperCase() + ${treeName.substring(1)})
-#end
-            ztree.setId(${className}.get${TreeCode}());
-            ztree.setpId(${className}.get${TreeParentCode}());
-            ztree.setName(${className}.get${TreeName}());
-            ztree.setTitle(${className}.get${TreeName}());
-            ztrees.add(ztree);
-        }
-        return ztrees;
-    }
-#end
-#if($table.sub)
-
-    /**
-     * 新增${subTable.functionName}信息
-     *
-     * @param ${className} ${functionName}对象
-     */
-    public void insert${subClassName}(${ClassName} ${className})
-    {
-        List<${subClassName}> ${subclassName}List = ${className}.get${subClassName}List();
-        String ${pkColumn.javaField} = ${className}.get${pkColumn.capJavaField}();
-        if (StringUtils.isNotNull(${subclassName}List))
-        {
-            List<${subClassName}> list = new ArrayList<${subClassName}>();
-            for (${subClassName} ${subclassName} : ${subclassName}List)
+        /**
+         * 查询${functionName}树列表
+         *
+         * @return 所有${functionName}信息
+         */
+        @Override
+        public List<Ztree> select${ClassName}Tree() {
+            List<${ClassName}> ${className}List = ${className}Dao.select${ClassName}List(new ${ClassName}());
+            List<Ztree> ztrees = new ArrayList<Ztree>();
+            for (${ClassName} ${className} :${className}List)
             {
-                ${subclassName}.set${subTableFkClassName}(${pkColumn.javaField});
-                list.add(${subclassName});
+                Ztree ztree = new Ztree();
+                #if($treeCode.length() > 2 && $treeCode.substring(1,2).matches("[A-Z]"))
+                    #set($TreeCode=$treeCode)
+                #else
+                    #set($TreeCode=$treeCode.substring(0,1).toUpperCase() + ${treeCode.substring(1)})
+                #end
+                #if($treeParentCode.length() > 2 && $treeParentCode.substring(1,2).matches("[A-Z]"))
+                    #set($TreeParentCode=$treeParentCode)
+                #else
+                    #set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
+                #end
+                #if($treeName.length() > 2 && $treeName.substring(1,2).matches("[A-Z]"))
+                    #set($TreeName=$treeName)
+                #else
+                    #set($TreeName=$treeName.substring(0,1).toUpperCase() + ${treeName.substring(1)})
+                #end
+                ztree.setId(${className}.get${TreeCode}());
+                ztree.setpId(${className}.get${TreeParentCode}());
+                ztree.setName(${className}.get${TreeName}());
+                ztree.setTitle(${className}.get${TreeName}());
+                ztrees.add(ztree);
             }
-            if (list.size() > 0)
-            {
-                ${className}Dao.batch${subClassName}(list);
+            return ztrees;
+        }
+    #end
+    #if($table.sub)
+
+        /**
+         * 新增${subTable.functionName}信息
+         *
+         * @param ${className} ${functionName}对象
+         */
+        public void insert${subClassName}(${ClassName} ${className}) {
+            List<${subClassName}> ${subclassName}List = ${className}.get${subClassName}List();
+            String ${pkColumn.javaField} = ${className}.get${pkColumn.capJavaField}();
+            if (StringUtils.isNotNull(${subclassName}List)) {
+                List<${subClassName}> list = new ArrayList<${subClassName}>();
+                for (${subClassName} ${subclassName} :${subclassName}List)
+                {
+                    ${subclassName}.set${subTableFkClassName}(${pkColumn.javaField});
+                    list.add(${subclassName});
+                }
+                if (list.size() > 0) {
+                        ${className}Dao.batch${subClassName}(list);
+                }
             }
         }
-    }
-#end
+    #end
 }

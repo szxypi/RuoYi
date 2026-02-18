@@ -1,45 +1,45 @@
 package com.zjjh.fdtemp.dao;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 import com.zjjh.fdtemp.beans.entity.SysMenu;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 菜单表 数据层
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public interface SysMenuDao
-{
+public interface SysMenuDao {
     /**
      * 查询系统所有菜单（含按钮）
-     * 
+     *
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuAll();
+    List<SysMenu> selectMenuAll();
 
     /**
      * 根据用户ID查询菜单
-     * 
+     *
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuAllByUserId(String userId);
+    List<SysMenu> selectMenuAllByUserId(String userId);
 
     /**
      * 查询系统正常显示菜单（不含按钮）
-     * 
+     *
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuNormalAll();
+    List<SysMenu> selectMenuNormalAll();
 
     /**
      * 根据用户ID查询菜单
-     * 
+     *
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenusByUserId(String userId);
+    List<SysMenu> selectMenusByUserId(String userId);
 
     /**
      * 根据用户ID查询权限
@@ -47,101 +47,101 @@ public interface SysMenuDao
      * @param userId 用户ID
      * @return 权限列表
      */
-    public List<String> selectPermsByUserId(String userId);
+    List<String> selectPermsByUserId(String userId);
 
     /**
      * 查询所有菜单权限标识（用于管理员）
      *
      * @return 权限列表
      */
-    public List<String> selectPermsAll();
+    List<String> selectPermsAll();
 
     /**
      * 根据角色ID查询权限
-     * 
+     *
      * @param roleId 角色ID
      * @return 权限列表
      */
-    public List<String> selectPermsByRoleId(String roleId);
+    List<String> selectPermsByRoleId(String roleId);
 
     /**
      * 根据角色ID查询菜单
-     * 
+     *
      * @param roleId 角色ID
      * @return 菜单列表
      */
-    public List<String> selectMenuTree(String roleId);
+    List<String> selectMenuTree(String roleId);
 
     /**
      * 查询系统菜单列表
-     * 
+     *
      * @param menu 菜单信息
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuList(SysMenu menu);
+    List<SysMenu> selectMenuList(SysMenu menu);
 
     /**
      * 查询系统菜单列表
-     * 
+     *
      * @param menu 菜单信息
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuListByUserId(SysMenu menu);
+    List<SysMenu> selectMenuListByUserId(SysMenu menu);
 
     /**
      * 删除菜单管理信息
-     * 
+     *
      * @param menuId 菜单ID
      * @return 结果
      */
-    public int deleteMenuById(String menuId);
+    int deleteMenuById(String menuId);
 
     /**
      * 根据菜单ID查询信息
-     * 
+     *
      * @param menuId 菜单ID
      * @return 菜单信息
      */
-    public SysMenu selectMenuById(String menuId);
+    SysMenu selectMenuById(String menuId);
 
     /**
      * 查询菜单数量
-     * 
+     *
      * @param parentId 菜单父ID
      * @return 结果
      */
-    public int selectCountMenuByParentId(String parentId);
+    int selectCountMenuByParentId(String parentId);
 
     /**
      * 新增菜单信息
-     * 
+     *
      * @param menu 菜单信息
      * @return 结果
      */
-    public int insertMenu(SysMenu menu);
+    int insertMenu(SysMenu menu);
 
     /**
      * 修改菜单信息
-     * 
+     *
      * @param menu 菜单信息
      * @return 结果
      */
-    public int updateMenu(SysMenu menu);
+    int updateMenu(SysMenu menu);
 
     /**
      * 保存菜单排序
-     * 
-     * @param menuIds 菜单ID
+     *
+     * @param menuIds   菜单ID
      * @param orderNums 排序ID
      */
-    public void updateMenuSort(SysMenu menu);
+    void updateMenuSort(SysMenu menu);
 
     /**
      * 校验菜单名称是否唯一
-     * 
+     *
      * @param menuName 菜单名称
      * @param parentId 父菜单ID
      * @return 结果
      */
-    public SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") String parentId);
+    SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") String parentId);
 }

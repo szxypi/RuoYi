@@ -125,8 +125,8 @@ class SysJobLogServiceImplTest {
         jobLogService.addJobLog(testJobLog);
 
         verify(jobLogMapper).insertJobLog(argThat(log ->
-            Constants.FAIL.equals(log.getStatus()) &&
-            log.getExceptionInfo() != null
+                Constants.FAIL.equals(log.getStatus()) &&
+                        log.getExceptionInfo() != null
         ));
     }
 

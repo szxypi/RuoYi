@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -83,5 +84,6 @@ class BeanValidatorsTest {
     }
 
     // 测试用的分组接口
-    interface TestGroup {}
+    interface TestGroup {
+    }
 }

@@ -154,7 +154,7 @@ class SysJobDaoTest {
 
         assertNotNull(result);
         assertTrue(result.stream()
-            .allMatch(j -> ScheduleConstants.Status.PAUSE.getValue().equals(j.getStatus())));
+                .allMatch(j -> ScheduleConstants.Status.PAUSE.getValue().equals(j.getStatus())));
     }
 
     @Test
@@ -287,10 +287,10 @@ class SysJobDaoTest {
     void testDifferentMisfirePolicies() {
         // 测试各种 misfire 策略
         String[] policies = {
-            ScheduleConstants.MISFIRE_DEFAULT,
-            ScheduleConstants.MISFIRE_IGNORE_MISFIRES,
-            ScheduleConstants.MISFIRE_FIRE_AND_PROCEED,
-            ScheduleConstants.MISFIRE_DO_NOTHING
+                ScheduleConstants.MISFIRE_DEFAULT,
+                ScheduleConstants.MISFIRE_IGNORE_MISFIRES,
+                ScheduleConstants.MISFIRE_FIRE_AND_PROCEED,
+                ScheduleConstants.MISFIRE_DO_NOTHING
         };
 
         for (String policy : policies) {

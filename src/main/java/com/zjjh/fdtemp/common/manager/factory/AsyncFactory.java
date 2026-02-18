@@ -1,47 +1,37 @@
 package com.zjjh.fdtemp.common.manager.factory;
 
-import java.util.TimerTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.zjjh.fdtemp.constants.Constants;
-import com.zjjh.fdtemp.common.utils.AddressUtils;
-import com.zjjh.fdtemp.common.utils.LogUtils;
-import com.zjjh.fdtemp.common.utils.ServletUtils;
-import com.zjjh.fdtemp.common.utils.IpUtils;
-import com.zjjh.fdtemp.common.utils.StringUtils;
-import com.zjjh.fdtemp.common.utils.http.UserAgentUtils;
-import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
 import com.zjjh.fdtemp.beans.entity.SysLogininfor;
 import com.zjjh.fdtemp.beans.entity.SysOperLog;
+import com.zjjh.fdtemp.common.utils.*;
+import com.zjjh.fdtemp.common.utils.http.UserAgentUtils;
+import com.zjjh.fdtemp.common.utils.spring.SpringUtils;
+import com.zjjh.fdtemp.constants.Constants;
 import com.zjjh.fdtemp.service.SysOperLogService;
 import com.zjjh.fdtemp.service.impl.SysLogininforServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class AsyncFactory
-{
+import java.util.TimerTask;
+
+public class AsyncFactory {
     private static final Logger sys_user_logger = LoggerFactory.getLogger("sys-user");
 
-    public static TimerTask recordOper(final SysOperLog operLog)
-    {
-        return new TimerTask()
-        {
+    public static TimerTask recordOper(final SysOperLog operLog) {
+        return new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 operLog.setOperLocation(AddressUtils.getRealAddressByIP(operLog.getOperIp()));
                 SpringUtils.getBean(SysOperLogService.class).insertOperlog(operLog);
             }
         };
     }
 
-    public static TimerTask recordLogininfor(final String username, final String status, final String message, final Object... args)
-    {
+    public static TimerTask recordLogininfor(final String username, final String status, final String message, final Object... args) {
         final String userAgent = ServletUtils.getRequest().getHeader("User-Agent");
         final String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
-        return new TimerTask()
-        {
+        return new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 String address = AddressUtils.getRealAddressByIP(ip);
                 StringBuilder s = new StringBuilder();
                 s.append(LogUtils.getBlock(ip));
@@ -59,12 +49,9 @@ public class AsyncFactory
                 logininfor.setBrowser(browser);
                 logininfor.setOs(os);
                 logininfor.setMsg(message);
-                if (StringUtils.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER))
-                {
+                if (StringUtils.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
                     logininfor.setStatus(Constants.SUCCESS);
-                }
-                else if (Constants.LOGIN_FAIL.equals(status))
-                {
+                } else if (Constants.LOGIN_FAIL.equals(status)) {
                     logininfor.setStatus(Constants.FAIL);
                 }
                 SpringUtils.getBean(SysLogininforServiceImpl.class).insertLogininfor(logininfor);

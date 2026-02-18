@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * PermissionUtils 单元测试
- *
+ * <p>
  * 注意：PermissionUtils.getMsg依赖MessageUtils，这里测试不涉及静态依赖的逻辑
  */
 @DisplayName("PermissionUtils 测试")
@@ -79,7 +79,7 @@ class PermissionUtilsTest {
     void testPermissionSuffixMatch_View() {
         String permission = "system:user:view";
         assertTrue(StringUtils.endsWithAny(permission,
-                new String[] { PermissionConstants.VIEW_PERMISSION, PermissionConstants.LIST_PERMISSION }));
+                new String[]{PermissionConstants.VIEW_PERMISSION, PermissionConstants.LIST_PERMISSION}));
     }
 
     @Test
@@ -87,7 +87,7 @@ class PermissionUtilsTest {
     void testPermissionSuffixMatch_List() {
         String permission = "system:user:list";
         assertTrue(StringUtils.endsWithAny(permission,
-                new String[] { PermissionConstants.VIEW_PERMISSION, PermissionConstants.LIST_PERMISSION }));
+                new String[]{PermissionConstants.VIEW_PERMISSION, PermissionConstants.LIST_PERMISSION}));
     }
 
     @Test

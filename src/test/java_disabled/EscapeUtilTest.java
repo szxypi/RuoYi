@@ -180,13 +180,13 @@ class EscapeUtilTest {
         @DisplayName("编码后解码应得到原字符串")
         void encodeDecode_ShouldReturnOriginal() {
             String[] testCases = {
-                "Hello World",
-                "中文测试",
-                "<script>alert('XSS')</script>",
-                "test@example.com",
-                "12345",
-                "special chars: !@#$%^&*()",
-                "换行\n和制表符\t"
+                    "Hello World",
+                    "中文测试",
+                    "<script>alert('XSS')</script>",
+                    "test@example.com",
+                    "12345",
+                    "special chars: !@#$%^&*()",
+                    "换行\n和制表符\t"
             };
 
             for (String original : testCases) {

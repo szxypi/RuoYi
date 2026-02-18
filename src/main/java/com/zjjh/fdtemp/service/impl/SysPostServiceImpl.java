@@ -1,181 +1,108 @@
 package com.zjjh.fdtemp.service.impl;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.zjjh.fdtemp.constants.UserConstants;
+import com.zjjh.fdtemp.beans.entity.SysPost;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.common.exception.ServiceException;
 import com.zjjh.fdtemp.common.utils.StringUtils;
-import com.zjjh.fdtemp.beans.entity.SysPost;
+import com.zjjh.fdtemp.constants.UserConstants;
 import com.zjjh.fdtemp.dao.SysPostDao;
 import com.zjjh.fdtemp.dao.SysUserPostDao;
 import com.zjjh.fdtemp.service.SysPostService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 岗位信息 服务层处理
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
 @Service
-public class SysPostServiceImpl implements SysPostService
-{
+public class SysPostServiceImpl implements SysPostService {
     @Autowired
     private SysPostDao postMapper;
 
     @Autowired
     private SysUserPostDao userPostMapper;
 
-    /**
-     * 查询岗位信息集合
-     * 
-     * @param post 岗位信息
-     * @return 岗位信息集合
-     */
     @Override
-    public List<SysPost> selectPostList(SysPost post)
-    {
+    public List<SysPost> selectPostList(SysPost post) {
         return postMapper.selectPostList(post);
     }
 
-    /**
-     * 查询所有岗位
-     * 
-     * @return 岗位列表
-     */
     @Override
-    public List<SysPost> selectPostAll()
-    {
+    public List<SysPost> selectPostAll() {
         return postMapper.selectPostAll();
     }
 
-    /**
-     * 根据用户ID查询岗位
-     * 
-     * @param userId 用户ID
-     * @return 岗位列表
-     */
     @Override
-    public List<SysPost> selectPostsByUserId(String userId)
-    {
-        List<SysPost> userPosts = postMapper.selectPostsByUserId(userId);
+    public List<SysPost> selectPostsByUserId(String userId) {
+        Set<String> userPostIds = postMapper.selectPostsByUserId(userId)
+                .stream()
+                .map(SysPost::getId)
+                .collect(Collectors.toSet());
+
         List<SysPost> posts = postMapper.selectPostAll();
-        for (SysPost post : posts)
-        {
-            for (SysPost userRole : userPosts)
-            {
-                if (post.getId() == userRole.getId())
-                {
-                    post.setFlag(true);
-                    break;
-                }
-            }
-        }
+        posts.stream()
+                .filter(post -> userPostIds.contains(post.getId()))
+                .forEach(post -> post.setFlag(true));
         return posts;
     }
 
-    /**
-     * 通过岗位ID查询岗位信息
-     * 
-     * @param postId 岗位ID
-     * @return 角色对象信息
-     */
     @Override
-    public SysPost selectPostById(String postId)
-    {
+    public SysPost selectPostById(String postId) {
         return postMapper.selectPostById(postId);
     }
 
-    /**
-     * 批量删除岗位信息
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
     @Override
-    public int deletePostByIds(String ids)
-    {
+    public int deletePostByIds(String ids) {
         String[] postIds = Convert.toStrArray(ids);
-        for (String postId : postIds)
-        {
-            SysPost post = selectPostById(postId);
-            if (countUserPostById(postId) > 0)
-            {
-                throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
+        for (String postId : postIds) {
+            if (countUserPostById(postId) > 0) {
+                SysPost post = selectPostById(postId);
+                throw new ServiceException(String.format("%s已分配,不能删除", post.getPostName()));
             }
         }
         return postMapper.deletePostByIds(postIds);
     }
 
-    /**
-     * 新增保存岗位信息
-     * 
-     * @param post 岗位信息
-     * @return 结果
-     */
     @Override
-    public int insertPost(SysPost post)
-    {
+    public int insertPost(SysPost post) {
         return postMapper.insertPost(post);
     }
 
-    /**
-     * 修改保存岗位信息
-     * 
-     * @param post 岗位信息
-     * @return 结果
-     */
     @Override
-    public int updatePost(SysPost post)
-    {
+    public int updatePost(SysPost post) {
         return postMapper.updatePost(post);
     }
 
-    /**
-     * 通过岗位ID查询岗位使用数量
-     * 
-     * @param postId 岗位ID
-     * @return 结果
-     */
     @Override
-    public int countUserPostById(String postId)
-    {
+    public int countUserPostById(String postId) {
         return userPostMapper.countUserPostById(postId);
     }
 
-    /**
-     * 校验岗位名称是否唯一
-     * 
-     * @param post 岗位信息
-     * @return 结果
-     */
     @Override
-    public boolean checkPostNameUnique(SysPost post)
-    {
-        String postId = StringUtils.isNull(post.getId()) ? "" : post.getId();
+    public boolean checkPostNameUnique(SysPost post) {
         SysPost info = postMapper.checkPostNameUnique(post.getPostName());
-        if (StringUtils.isNotNull(info) && !info.getId().equals(postId))
-        {
-            return UserConstants.NOT_UNIQUE;
-        }
-        return UserConstants.UNIQUE;
+        return isUnique(post.getId(), info);
+    }
+
+    @Override
+    public boolean checkPostCodeUnique(SysPost post) {
+        SysPost info = postMapper.checkPostCodeUnique(post.getPostCode());
+        return isUnique(post.getId(), info);
     }
 
     /**
-     * 校验岗位编码是否唯一
-     * 
-     * @param post 岗位信息
-     * @return 结果
+     * 判断是否唯一
      */
-    @Override
-    public boolean checkPostCodeUnique(SysPost post)
-    {
-        String postId = StringUtils.isNull(post.getId()) ? "" : post.getId();
-        SysPost info = postMapper.checkPostCodeUnique(post.getPostCode());
-        if (StringUtils.isNotNull(info) && !info.getId().equals(postId))
-        {
-            return UserConstants.NOT_UNIQUE;
-        }
-        return UserConstants.UNIQUE;
+    private boolean isUnique(String currentId, SysPost existing) {
+        String postId = StringUtils.isNull(currentId) ? "" : currentId;
+        return StringUtils.isNull(existing) || existing.getId().equals(postId)
+                ? UserConstants.UNIQUE
+                : UserConstants.NOT_UNIQUE;
     }
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -136,7 +137,7 @@ class IdUtilsTest {
 
             // fastUUID应该比randomUUID快(使用ThreadLocalRandom)
             assertTrue(fastTime <= randomTime * 2,
-                "fastUUID应该比randomUUID快或相近。randomUUID: " + randomTime + "ms, fastUUID: " + fastTime + "ms");
+                    "fastUUID应该比randomUUID快或相近。randomUUID: " + randomTime + "ms, fastUUID: " + fastTime + "ms");
         }
     }
 }

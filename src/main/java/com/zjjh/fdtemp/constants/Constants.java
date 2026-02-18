@@ -4,11 +4,10 @@ import java.util.Locale;
 
 /**
  * 通用常量信息
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public class Constants
-{
+public class Constants {
     /**
      * UTF-8 字符集
      */
@@ -112,11 +111,12 @@ public class Constants
     /**
      * 定时任务白名单配置（仅允许访问的包名，如其他需要可以自行添加）
      */
-    public static final String[] JOB_WHITELIST_STR = { "com.zjjh.fdtemp.service" };
+    public static final String[] JOB_WHITELIST_STR = {"com.zjjh.fdtemp.service"};
 
     /**
-     * 定时任务违规的字符
+     * 定时任务违规的字符（黑名单包名，禁止执行这些包下的类）
+     * 注意：不要添加会覆盖白名单的包前缀
      */
-    public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
-            "org.springframework", "org.apache", "com.zjjh.fdtemp.common.utils.file", "com.zjjh.fdtemp.config", "com.zjjh.fdtemp" };
+    public static final String[] JOB_ERROR_STR = {"java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
+            "org.springframework", "org.apache.xbean", "com.zjjh.fdtemp.common.utils.file"};
 }

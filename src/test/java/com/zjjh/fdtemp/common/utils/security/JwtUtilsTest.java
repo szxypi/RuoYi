@@ -3,8 +3,6 @@ package com.zjjh.fdtemp.common.utils.security;
 import com.zjjh.fdtemp.beans.LoginUser;
 import com.zjjh.fdtemp.beans.entity.SysUser;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,7 +19,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * JwtUtils 单元测试

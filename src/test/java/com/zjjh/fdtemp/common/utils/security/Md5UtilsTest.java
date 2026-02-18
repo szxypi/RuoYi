@@ -3,14 +3,14 @@ package com.zjjh.fdtemp.common.utils.security;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.security.MessageDigest;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Md5Utils 单元测试
- *
+ * <p>
  * 注意：Md5Utils的md5方法是private的，这里直接测试hash方法的预期行为
  */
 @DisplayName("Md5Utils 测试")

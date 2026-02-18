@@ -67,17 +67,17 @@ class ScheduleConstantsTest {
     @DisplayName("测试所有 misfire 策略值唯一性")
     void testMisfirePoliciesUnique() {
         String[] policies = {
-            ScheduleConstants.MISFIRE_DEFAULT,
-            ScheduleConstants.MISFIRE_IGNORE_MISFIRES,
-            ScheduleConstants.MISFIRE_FIRE_AND_PROCEED,
-            ScheduleConstants.MISFIRE_DO_NOTHING
+                ScheduleConstants.MISFIRE_DEFAULT,
+                ScheduleConstants.MISFIRE_IGNORE_MISFIRES,
+                ScheduleConstants.MISFIRE_FIRE_AND_PROCEED,
+                ScheduleConstants.MISFIRE_DO_NOTHING
         };
 
         // 验证所有策略值不同
         for (int i = 0; i < policies.length; i++) {
             for (int j = i + 1; j < policies.length; j++) {
                 assertNotEquals(policies[i], policies[j],
-                    "Misfire policies should have unique values");
+                        "Misfire policies should have unique values");
             }
         }
     }
@@ -86,8 +86,8 @@ class ScheduleConstantsTest {
     @DisplayName("测试 Status 枚举值唯一性")
     void testStatusEnumValuesUnique() {
         assertNotEquals(
-            ScheduleConstants.Status.NORMAL.getValue(),
-            ScheduleConstants.Status.PAUSE.getValue()
+                ScheduleConstants.Status.NORMAL.getValue(),
+                ScheduleConstants.Status.PAUSE.getValue()
         );
     }
 
@@ -116,9 +116,9 @@ class ScheduleConstantsTest {
     @DisplayName("测试 Status 枚举 valueOf")
     void testStatusEnumValueOf() {
         assertEquals(ScheduleConstants.Status.NORMAL,
-            ScheduleConstants.Status.valueOf("NORMAL"));
+                ScheduleConstants.Status.valueOf("NORMAL"));
         assertEquals(ScheduleConstants.Status.PAUSE,
-            ScheduleConstants.Status.valueOf("PAUSE"));
+                ScheduleConstants.Status.valueOf("PAUSE"));
     }
 
     @Test

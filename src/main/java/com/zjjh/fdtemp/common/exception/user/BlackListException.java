@@ -2,15 +2,13 @@ package com.zjjh.fdtemp.common.exception.user;
 
 /**
  * 黑名单IP异常类
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public class BlackListException extends UserException
-{
+public class BlackListException extends UserException {
     private static final long serialVersionUID = 1L;
 
-    public BlackListException()
-    {
+    public BlackListException() {
         super("login.blocked", null);
     }
 }

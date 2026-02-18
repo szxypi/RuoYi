@@ -1,7 +1,6 @@
 package com.zjjh.fdtemp.config;
 
 import com.zjjh.fdtemp.filter.JwtAuthenticationFilter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +11,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * SecurityConfig 单元测试
@@ -40,7 +39,7 @@ class SecurityConfigTest {
         PasswordEncoder encoder = securityConfig.passwordEncoder();
 
         assertNotNull(encoder);
-        assertTrue(encoder instanceof BCryptPasswordEncoder);
+        assertInstanceOf(BCryptPasswordEncoder.class, encoder);
     }
 
     @Test

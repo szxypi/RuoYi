@@ -17,12 +17,12 @@ import java.util.Map;
 
 /**
  * MyBatis 全局拦截器 - 自动填充公共字段
- *
+ * <p>
  * INSERT 时自动填充: id, yn, createUser, createUserNickname, createTime, updateTime
  * UPDATE 时自动填充: updateUser, updateUserNickname, updateTime
  */
 @Intercepts({
-    @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
+        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
 })
 public class MybatisAutoFillInterceptor implements Interceptor {
 

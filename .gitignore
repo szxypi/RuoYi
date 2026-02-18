@@ -114,3 +114,5 @@ rebel.xml
 *.pyc
 *.pid
 *.seed
+
+/null/

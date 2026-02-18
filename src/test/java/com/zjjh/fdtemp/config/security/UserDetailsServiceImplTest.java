@@ -103,7 +103,7 @@ class UserDetailsServiceImplTest {
         UserDetails userDetails = userDetailsService.loadUserByUsername("normaluser");
 
         assertNotNull(userDetails);
-        assertTrue(userDetails instanceof LoginUser);
+        assertInstanceOf(LoginUser.class, userDetails);
         LoginUser loginUser = (LoginUser) userDetails;
         assertEquals("normaluser", loginUser.getUsername());
         assertEquals("2", loginUser.getUserId());
@@ -136,8 +136,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName("nonexistent")).thenReturn(null);
 
         UsernameNotFoundException exception = assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername("nonexistent")
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername("nonexistent")
         );
 
         assertTrue(exception.getMessage().contains("不存在"));
@@ -150,8 +150,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName("deleteduser")).thenReturn(deletedUser);
 
         ServiceException exception = assertThrows(
-            ServiceException.class,
-            () -> userDetailsService.loadUserByUsername("deleteduser")
+                ServiceException.class,
+                () -> userDetailsService.loadUserByUsername("deleteduser")
         );
 
         assertTrue(exception.getMessage().contains("已被删除"));
@@ -163,8 +163,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName("disableduser")).thenReturn(disabledUser);
 
         ServiceException exception = assertThrows(
-            ServiceException.class,
-            () -> userDetailsService.loadUserByUsername("disableduser")
+                ServiceException.class,
+                () -> userDetailsService.loadUserByUsername("disableduser")
         );
 
         assertTrue(exception.getMessage().contains("已停用"));
@@ -176,8 +176,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName("")).thenReturn(null);
 
         assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername("")
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername("")
         );
     }
 
@@ -187,8 +187,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName(null)).thenReturn(null);
 
         assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername(null)
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername(null)
         );
     }
 
@@ -229,8 +229,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName("NormalUser")).thenReturn(null);
 
         assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername("NormalUser")
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername("NormalUser")
         );
 
         verify(userService).selectUserByLoginName("NormalUser");
@@ -244,8 +244,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName(specialUsername)).thenReturn(null);
 
         assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername(specialUsername)
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername(specialUsername)
         );
     }
 
@@ -260,8 +260,8 @@ class UserDetailsServiceImplTest {
         when(userService.selectUserByLoginName(longUsername)).thenReturn(null);
 
         assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername(longUsername)
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername(longUsername)
         );
     }
 }

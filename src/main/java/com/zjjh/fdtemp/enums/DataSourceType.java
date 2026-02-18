@@ -2,11 +2,10 @@ package com.zjjh.fdtemp.enums;
 
 /**
  * 数据源
- * 
- * @author ruoyi
+ *
+ * @author szx
  */
-public enum DataSourceType
-{
+public enum DataSourceType {
     /**
      * 主库
      */

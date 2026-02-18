@@ -173,7 +173,7 @@ class SysJobLogDaoTest {
 
         assertNotNull(result);
         assertTrue(result.stream()
-            .allMatch(l -> Constants.FAIL.equals(l.getStatus())));
+                .allMatch(l -> Constants.FAIL.equals(l.getStatus())));
     }
 
     @Test
@@ -333,7 +333,7 @@ class SysJobLogDaoTest {
             Date next = result.get(i + 1).getCreateTime();
             if (current != null && next != null) {
                 assertTrue(current.compareTo(next) >= 0,
-                    "日志应该按时间倒序排列");
+                        "日志应该按时间倒序排列");
             }
         }
     }

@@ -56,8 +56,8 @@ public class SysDeptControllerTest {
         loginBody.put("password", password);
 
         MvcResult result = mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
@@ -78,7 +78,7 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/dept/list")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -91,8 +91,8 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/dept/list")
-                .header("Authorization", "Bearer " + token)
-                .param("deptName", "总公司"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("deptName", "总公司"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
@@ -127,9 +127,9 @@ public class SysDeptControllerTest {
         dept.put("status", "0");
 
         mockMvc.perform(post("/system/dept/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dept)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dept)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -147,9 +147,9 @@ public class SysDeptControllerTest {
         dept.put("orderNum", "99");
 
         mockMvc.perform(post("/system/dept/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dept)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dept)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -167,9 +167,9 @@ public class SysDeptControllerTest {
         dept.put("orderNum", "99");
 
         mockMvc.perform(post("/system/dept/add")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dept)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dept)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -193,9 +193,9 @@ public class SysDeptControllerTest {
         dept.put("status", "0");
 
         mockMvc.perform(post("/system/dept/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dept)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dept)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -214,9 +214,9 @@ public class SysDeptControllerTest {
         dept.put("orderNum", "1");
 
         mockMvc.perform(post("/system/dept/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dept)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dept)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -236,9 +236,9 @@ public class SysDeptControllerTest {
         dept.put("status", "1"); // 停用，但有正常子部门
 
         mockMvc.perform(post("/system/dept/edit")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dept)))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dept)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(result -> {
@@ -262,7 +262,7 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(delete("/system/dept/" + SHENZHEN_DEPT_ID)
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -275,7 +275,7 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(delete("/system/dept/" + ROOT_DEPT_ID)
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(500));
@@ -289,7 +289,7 @@ public class SysDeptControllerTest {
 
         // 市场部门（ID=4）没有子部门和用户
         mockMvc.perform(delete("/system/dept/4")
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -306,9 +306,9 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/dept/checkDeptNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("deptName", "唯一部门名测试")
-                .param("parentId", ROOT_DEPT_ID))
+                        .header("Authorization", "Bearer " + token)
+                        .param("deptName", "唯一部门名测试")
+                        .param("parentId", ROOT_DEPT_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
@@ -321,9 +321,9 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(post("/system/dept/checkDeptNameUnique")
-                .header("Authorization", "Bearer " + token)
-                .param("deptName", "总公司")
-                .param("parentId", "0"))
+                        .header("Authorization", "Bearer " + token)
+                        .param("deptName", "总公司")
+                        .param("parentId", "0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
@@ -340,7 +340,7 @@ public class SysDeptControllerTest {
         String token = login(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         mockMvc.perform(get("/system/dept/treeData/" + SHENZHEN_DEPT_ID)
-                .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
