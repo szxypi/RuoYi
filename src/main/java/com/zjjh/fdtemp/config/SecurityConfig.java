@@ -30,13 +30,13 @@ public class SecurityConfig {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${security.cors.allowed-origin-patterns:http://localhost:*,http://127.0.0.1:*}")
-    private List<String> allowedOriginPatterns = List.of("http://localhost:*", "http://127.0.0.1:*");
+    private List<String> allowedOriginPatterns;
 
     @Value("${security.cors.allowed-methods:GET,POST,PUT,DELETE,OPTIONS}")
-    private List<String> allowedMethods = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS");
+    private List<String> allowedMethods;
 
     @Value("${security.cors.allowed-headers:Authorization,Content-Type,X-Requested-With}")
-    private List<String> allowedHeaders = List.of("Authorization", "Content-Type", "X-Requested-With");
+    private List<String> allowedHeaders;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

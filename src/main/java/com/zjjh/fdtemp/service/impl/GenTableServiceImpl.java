@@ -162,9 +162,11 @@ public class GenTableServiceImpl implements GenTableService {
     @Override
     public byte[] downloadCode(String tableName) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ZipOutputStream zip = new ZipOutputStream(outputStream);
-        generatorCode(tableName, zip);
-        IOUtils.closeQuietly(zip);
+        try (ZipOutputStream zip = new ZipOutputStream(outputStream)) {
+            generatorCode(tableName, zip);
+        } catch (IOException e) {
+            log.error("下载代码失败，表名：" + tableName, e);
+        }
         return outputStream.toByteArray();
     }
 
@@ -229,11 +231,13 @@ public class GenTableServiceImpl implements GenTableService {
     @Override
     public byte[] downloadCode(String[] tableNames) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ZipOutputStream zip = new ZipOutputStream(outputStream);
-        for (String tableName : tableNames) {
-            generatorCode(tableName, zip);
+        try (ZipOutputStream zip = new ZipOutputStream(outputStream)) {
+            for (String tableName : tableNames) {
+                generatorCode(tableName, zip);
+            }
+        } catch (IOException e) {
+            log.error("下载代码失败", e);
         }
-        IOUtils.closeQuietly(zip);
         return outputStream.toByteArray();
     }
 
@@ -263,7 +267,6 @@ public class GenTableServiceImpl implements GenTableService {
             try {
                 zip.putNextEntry(new ZipEntry(VelocityUtils.getFileName(template, table)));
                 IOUtils.write(sw.toString(), zip, Constants.UTF8);
-                IOUtils.closeQuietly(sw);
                 zip.flush();
                 zip.closeEntry();
             } catch (IOException e) {

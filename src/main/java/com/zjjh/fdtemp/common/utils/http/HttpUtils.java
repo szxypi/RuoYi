@@ -163,12 +163,13 @@ public class HttpUtils {
     public static String sendSSLPost(String url, String param, String contentType) {
         StringBuilder result = new StringBuilder();
         String urlNameString = url + "?" + param;
+        HttpsURLConnection conn = null;
         try {
             log.info("sendSSLPost - {}", urlNameString);
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, new TrustManager[]{new TrustAnyTrustManager()}, new java.security.SecureRandom());
             URL console = new URL(urlNameString);
-            HttpsURLConnection conn = (HttpsURLConnection) console.openConnection();
+            conn = (HttpsURLConnection) console.openConnection();
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
@@ -180,17 +181,16 @@ public class HttpUtils {
             conn.setSSLSocketFactory(sc.getSocketFactory());
             conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
             conn.connect();
-            InputStream is = conn.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String ret = "";
-            while ((ret = br.readLine()) != null) {
-                if (ret != null && !"".equals(ret.trim())) {
-                    result.append(new String(ret.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            try (InputStream is = conn.getInputStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String ret = "";
+                while ((ret = br.readLine()) != null) {
+                    if (ret != null && !"".equals(ret.trim())) {
+                        result.append(new String(ret.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+                    }
                 }
             }
             log.info("recv - {}", result);
-            conn.disconnect();
-            br.close();
         } catch (ConnectException e) {
             log.error("调用HttpUtils.sendSSLPost ConnectException, url=" + url + ",param=" + param, e);
         } catch (SocketTimeoutException e) {
@@ -199,6 +199,10 @@ public class HttpUtils {
             log.error("调用HttpUtils.sendSSLPost IOException, url=" + url + ",param=" + param, e);
         } catch (Exception e) {
             log.error("调用HttpsUtil.sendSSLPost Exception, url=" + url + ",param=" + param, e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
         return result.toString();
     }

@@ -88,11 +88,13 @@ public class IpUtils {
                 if (b1 >= SECTION_3 && b1 <= SECTION_4) {
                     return true;
                 }
+                return false;
             case SECTION_5:
                 switch (b1) {
                     case SECTION_6:
                         return true;
                 }
+                return false;
             default:
                 return false;
         }

@@ -75,57 +75,57 @@ public class UserAgentUtils {
         // Chrome系列浏览器
         Matcher chromeMatcher = CHROME_PATTERN.matcher(browser);
         if (chromeMatcher.find() && (browser.contains("Chrome") || browser.contains("CriOS"))) {
-            return "Chrome" + chromeMatcher.group(1);
+            return "Chrome " + chromeMatcher.group(1);
         }
         // Firefox
         Matcher firefoxMatcher = FIREFOX_PATTERN.matcher(browser);
         if (firefoxMatcher.find()) {
-            return "Firefox" + firefoxMatcher.group(1);
+            return "Firefox " + firefoxMatcher.group(1);
         }
         // Edge浏览器
         Matcher edgeMatcher = EDGE_PATTERN.matcher(browser);
         if (edgeMatcher.find()) {
-            return "Edge" + edgeMatcher.group(1);
+            return "Edge " + edgeMatcher.group(1);
         }
         // Safari浏览器（需排除Chrome）
         Matcher safariMatcher = SAFARI_PATTERN.matcher(browser);
         if (safariMatcher.find() && !browser.contains("Chrome")) {
-            return "Safari" + safariMatcher.group(1);
+            return "Safari " + safariMatcher.group(1);
         }
         // 微信内置浏览器
         Matcher wechatMatcher = WECHAT_PATTERN.matcher(browser);
         if (wechatMatcher.find()) {
-            return "WeChat" + wechatMatcher.group(1);
+            return "WeChat " + wechatMatcher.group(1);
         }
         // UC浏览器
         Matcher ucMatcher = UC_PATTERN.matcher(browser);
         if (ucMatcher.find()) {
-            return "UC Browser" + ucMatcher.group(1);
+            return "UC Browser " + ucMatcher.group(1);
         }
         // QQ浏览器
         Matcher qqMatcher = QQ_PATTERN.matcher(browser);
         if (qqMatcher.find()) {
-            return "QQ Browser" + qqMatcher.group(1);
+            return "QQ Browser " + qqMatcher.group(1);
         }
         // 百度浏览器
         Matcher baiduMatcher = BAIDU_PATTERN.matcher(browser);
         if (baiduMatcher.find()) {
-            return "Baidu Browser" + baiduMatcher.group(1);
+            return "Baidu Browser " + baiduMatcher.group(1);
         }
         // Samsung浏览器
         Matcher samsungMatcher = SAMSUNG_PATTERN.matcher(browser);
         if (samsungMatcher.find()) {
-            return "Samsung Browser" + samsungMatcher.group(1);
+            return "Samsung Browser " + samsungMatcher.group(1);
         }
         // Opera浏览器
         Matcher operaMatcher = OPERA_PATTERN.matcher(browser);
         if (operaMatcher.find()) {
-            return "Opera" + operaMatcher.group(1);
+            return "Opera " + operaMatcher.group(1);
         }
         // IE浏览器
         Matcher ieMatcher = IE_PATTERN.matcher(browser);
         if (ieMatcher.find()) {
-            return "Internet Explorer" + ieMatcher.group(1);
+            return "Internet Explorer " + ieMatcher.group(1);
         }
         return UNKNOWN;
     }
@@ -137,23 +137,23 @@ public class UserAgentUtils {
         // Windows系统
         Matcher windowsMatcher = WINDOWS_PATTERN.matcher(operatingSystem);
         if (windowsMatcher.find()) {
-            return "Windows" + getWindowsVersionDisplay(windowsMatcher.group(1));
+            return "Windows " + getWindowsVersionDisplay(windowsMatcher.group(1));
         }
         // macOS系统
         Matcher macMatcher = MACOS_PATTERN.matcher(operatingSystem);
         if (macMatcher.find()) {
             String version = macMatcher.group(1).replace("_", ".");
-            return "macOS" + extractMajorVersion(version);
+            return "macOS " + extractMajorVersion(version);
         }
         // Android系统
         Matcher androidMatcher = ANDROID_PATTERN.matcher(operatingSystem);
         if (androidMatcher.find()) {
-            return "Android" + extractMajorVersion(androidMatcher.group(1));
+            return "Android " + extractMajorVersion(androidMatcher.group(1));
         }
         // iOS系统
         Matcher iosMatcher = IOS_PATTERN.matcher(operatingSystem);
         if (iosMatcher.find() && (operatingSystem.contains("iPhone") || operatingSystem.contains("iPad"))) {
-            return "iOS" + extractMajorVersion(iosMatcher.group(1));
+            return "iOS " + extractMajorVersion(iosMatcher.group(1));
         }
         // Linux系统
         if (LINUX_PATTERN.matcher(operatingSystem).find() && !operatingSystem.contains("Android")) {
@@ -181,11 +181,6 @@ public class UserAgentUtils {
                 String firstPart = parts[0];
                 if (firstPart.matches("\\d+")) {
                     int version = Integer.parseInt(firstPart);
-
-                    // 处理三位数版本号（如142 -> 14）
-                    if (version >= 100) {
-                        return String.valueOf(version / 10);
-                    }
                     return firstPart;
                 }
             }
