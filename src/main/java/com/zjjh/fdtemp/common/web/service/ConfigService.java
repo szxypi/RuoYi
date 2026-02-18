@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * RuoYi首创 html调用 thymeleaf 实现参数管理
+ * 系统参数配置查询服务，供模板或接口层调用
  *
  * @author szx
  */

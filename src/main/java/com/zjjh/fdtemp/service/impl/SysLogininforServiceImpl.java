@@ -4,7 +4,6 @@ import com.zjjh.fdtemp.beans.entity.SysLogininfor;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.dao.SysLogininforDao;
 import com.zjjh.fdtemp.service.SysLogininforService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +14,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysLogininforServiceImpl implements SysLogininforService {
 
     private final SysLogininforDao logininforMapper;
+
+    public SysLogininforServiceImpl(SysLogininforDao logininforMapper) {
+        this.logininforMapper = logininforMapper;
+    }
 
     @Override
     public void insertLogininfor(SysLogininfor logininfor) {

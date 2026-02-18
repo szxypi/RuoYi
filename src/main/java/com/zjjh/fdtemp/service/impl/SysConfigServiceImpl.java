@@ -10,7 +10,6 @@ import com.zjjh.fdtemp.constants.UserConstants;
 import com.zjjh.fdtemp.dao.SysConfigDao;
 import com.zjjh.fdtemp.service.SysConfigService;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +20,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysConfigServiceImpl implements SysConfigService {
 
     private final SysConfigDao configMapper;
+
+    public SysConfigServiceImpl(SysConfigDao configMapper) {
+        this.configMapper = configMapper;
+    }
 
     /**
      * 项目启动时，初始化参数到缓存

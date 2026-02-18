@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * RuoYi首创 html调用 thymeleaf 实现字典读取
+ * 字典数据查询服务，供模板或接口层调用
  *
  * @author szx
  */

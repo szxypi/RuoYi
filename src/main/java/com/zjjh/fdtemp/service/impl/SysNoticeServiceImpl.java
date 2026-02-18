@@ -4,7 +4,6 @@ import com.zjjh.fdtemp.beans.entity.SysNotice;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.dao.SysNoticeDao;
 import com.zjjh.fdtemp.service.SysNoticeService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +14,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysNoticeServiceImpl implements SysNoticeService {
 
     private final SysNoticeDao noticeMapper;
+
+    public SysNoticeServiceImpl(SysNoticeDao noticeMapper) {
+        this.noticeMapper = noticeMapper;
+    }
 
     @Override
     public SysNotice selectNoticeById(String noticeId) {

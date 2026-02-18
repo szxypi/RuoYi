@@ -52,22 +52,22 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
 
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        String token = jwtUtils.generateToken(loginUser);
-        String refreshToken = jwtUtils.generateRefreshToken(loginUser);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtUtils.generateToken(userDetails);
+        String refreshToken = jwtUtils.generateRefreshToken(userDetails);
 
         Map<String, Object> data = new HashMap<>();
         data.put("token", token);
         data.put("refreshToken", refreshToken);
-
         return AjaxResult.success("登录成功", data);
     }
 
     @PostMapping("/logout")
     public AjaxResult logout(HttpServletRequest request, @RequestBody(required = false) Map<String, String> body) {
-        String accessToken = jwtUtils.extractTokenFromRequest(request);
-        blacklistTokenIfValid(accessToken, false);
-        if (body != null) {
+        String token = jwtUtils.extractTokenFromRequest(request);
+        blacklistTokenIfValid(token, false);
+
+        if (body != null && body.containsKey("refreshToken")) {
             blacklistTokenIfValid(body.get("refreshToken"), true);
         }
         return AjaxResult.success("退出成功");
@@ -76,21 +76,18 @@ public class AuthController {
     @PostMapping("/refresh")
     public AjaxResult refresh(@RequestBody Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
-        if (StringUtils.isEmpty(refreshToken)) {
-            return AjaxResult.error("刷新Token不能为空");
-        }
-        if (tokenBlacklist.isBlacklisted(refreshToken)) {
-            return AjaxResult.error("刷新Token无效");
-        }
-        if (jwtUtils.validateToken(refreshToken) && jwtUtils.isRefreshToken(refreshToken)) {
-            String username = jwtUtils.extractUsername(refreshToken);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (userDetails instanceof LoginUser loginUser) {
-                tokenBlacklist.addToBlacklist(refreshToken, jwtUtils.extractExpiration(refreshToken).getTime());
-                String newToken = jwtUtils.generateToken(loginUser);
-                String newRefreshToken = jwtUtils.generateRefreshToken(loginUser);
+        if (StringUtils.isNotEmpty(refreshToken) && jwtUtils.validateToken(refreshToken) && jwtUtils.isRefreshToken(refreshToken)) {
+            if (!tokenBlacklist.isBlacklisted(refreshToken)) {
+                String username = jwtUtils.extractUsername(refreshToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String newAccessToken = jwtUtils.generateToken(userDetails);
+                String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
+
+                // 将旧的 refreshToken 加入黑名单
+                blacklistTokenIfValid(refreshToken, true);
+
                 Map<String, Object> data = new HashMap<>();
-                data.put("token", newToken);
+                data.put("token", newAccessToken);
                 data.put("refreshToken", newRefreshToken);
                 return AjaxResult.success("刷新成功", data);
             }
@@ -102,7 +99,15 @@ public class AuthController {
     public AjaxResult getInfo() {
         SysUser user = SecurityUtils.getSysUser();
         Set<String> roles = roleService.selectRoleKeys(user.getId());
-        Set<String> permissions = menuService.selectPermsByUserId(user.getId());
+
+        // 修复：保持与 UserDetailsServiceImpl 一致的权限获取逻辑
+        // 管理员获取所有权限，非管理员通过 userId 查询
+        Set<String> permissions;
+        if (user.isAdmin()) {
+            permissions = menuService.selectPermsAll();
+        } else {
+            permissions = menuService.selectPermsByUserId(user.getId());
+        }
 
         Map<String, Object> data = new HashMap<>();
         data.put("user", user);

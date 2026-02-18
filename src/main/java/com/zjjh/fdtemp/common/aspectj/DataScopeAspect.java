@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * 数据过滤处理
@@ -25,6 +26,12 @@ import java.util.List;
 @Aspect
 @Component
 public class DataScopeAspect {
+
+    /**
+     * 安全 ID 格式校验：仅允许字母、数字、连字符（UUID 格式）
+     */
+    private static final Pattern SAFE_ID_PATTERN = Pattern.compile("^[a-zA-Z0-9\\-]+$");
+
     /**
      * 全部数据权限
      */
@@ -88,7 +95,7 @@ public class DataScopeAspect {
         List<String> scopeCustomIds = new ArrayList<String>();
         user.getRoles().forEach(role -> {
             if (DATA_SCOPE_CUSTOM.equals(role.getDataScope()) && StringUtils.equals(role.getStatus(), UserConstants.ROLE_NORMAL) && (StringUtils.isEmpty(permission) || StringUtils.containsAny(role.getPermissions(), Convert.toStrArray(permission)))) {
-                scopeCustomIds.add(role.getId());
+                scopeCustomIds.add(sanitizeId(role.getId()));
             }
         });
 
@@ -109,15 +116,16 @@ public class DataScopeAspect {
                     // 多个自定数据权限使用in查询，避免多次拼接。
                     sqlString.append(StringUtils.format(" OR {}.ID IN ( SELECT dept_id FROM sys_role_dept WHERE role_id in ('{}') ) ", deptAlias, String.join("','", scopeCustomIds)));
                 } else {
-                    sqlString.append(StringUtils.format(" OR {}.ID IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = '{}' ) ", deptAlias, role.getId()));
+                    sqlString.append(StringUtils.format(" OR {}.ID IN ( SELECT dept_id FROM sys_role_dept WHERE role_id = '{}' ) ", deptAlias, sanitizeId(role.getId())));
                 }
             } else if (DATA_SCOPE_DEPT.equals(dataScope)) {
-                sqlString.append(StringUtils.format(" OR {}.ID = '{}' ", deptAlias, user.getDeptId()));
+                sqlString.append(StringUtils.format(" OR {}.ID = '{}' ", deptAlias, sanitizeId(user.getDeptId())));
             } else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope)) {
-                sqlString.append(StringUtils.format(" OR {}.ID IN ( SELECT ID FROM sys_dept WHERE ID = '{}' or find_in_set( '{}' , ancestors ) )", deptAlias, user.getDeptId(), user.getDeptId()));
+                String safeDeptId = sanitizeId(user.getDeptId());
+                sqlString.append(StringUtils.format(" OR {}.ID IN ( SELECT ID FROM sys_dept WHERE ID = '{}' or find_in_set( '{}' , ancestors ) )", deptAlias, safeDeptId, safeDeptId));
             } else if (DATA_SCOPE_SELF.equals(dataScope)) {
                 if (StringUtils.isNotBlank(userAlias)) {
-                    sqlString.append(StringUtils.format(" OR {}.ID = '{}' ", userAlias, user.getId()));
+                    sqlString.append(StringUtils.format(" OR {}.ID = '{}' ", userAlias, sanitizeId(user.getId())));
                 } else {
                     // 数据权限为仅本人且没有userAlias别名不查询任何数据
                     sqlString.append(StringUtils.format(" OR {}.ID = '0' ", deptAlias));
@@ -137,6 +145,20 @@ public class DataScopeAspect {
                 baseEntity.getParams().put(DATA_SCOPE, " AND (" + sqlString.substring(4) + ")");
             }
         }
+    }
+
+    /**
+     * 校验并清理 ID 值，防止 SQL 注入（二次注入防御）
+     * 仅允许字母、数字、连字符
+     */
+    private static String sanitizeId(String id) {
+        if (id == null || id.isEmpty()) {
+            return "0";
+        }
+        if (!SAFE_ID_PATTERN.matcher(id).matches()) {
+            throw new IllegalArgumentException("数据权限过滤中检测到非法 ID 值: " + id);
+        }
+        return id;
     }
 
     /**

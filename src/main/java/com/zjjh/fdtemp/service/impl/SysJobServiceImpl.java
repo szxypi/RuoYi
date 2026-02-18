@@ -9,7 +9,6 @@ import com.zjjh.fdtemp.constants.ScheduleConstants;
 import com.zjjh.fdtemp.dao.SysJobDao;
 import com.zjjh.fdtemp.service.SysJobService;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -25,11 +24,15 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysJobServiceImpl implements SysJobService {
 
     private final Scheduler scheduler;
     private final SysJobDao jobMapper;
+
+    public SysJobServiceImpl(Scheduler scheduler, SysJobDao jobMapper) {
+        this.scheduler = scheduler;
+        this.jobMapper = jobMapper;
+    }
 
     /**
      * 项目启动时，初始化定时器

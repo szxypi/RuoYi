@@ -1,7 +1,7 @@
 package com.zjjh.fdtemp.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.zjjh.fdtemp.beans.entity.GenTable;
 import com.zjjh.fdtemp.beans.entity.GenTableColumn;
 import com.zjjh.fdtemp.common.core.text.CharsetKit;
@@ -16,7 +16,6 @@ import com.zjjh.fdtemp.constants.GenConstants;
 import com.zjjh.fdtemp.dao.GenTableColumnDao;
 import com.zjjh.fdtemp.dao.GenTableDao;
 import com.zjjh.fdtemp.service.GenTableService;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -45,7 +44,6 @@ import java.util.zip.ZipOutputStream;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class GenTableServiceImpl implements GenTableService {
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceImpl.class);
 
@@ -53,6 +51,11 @@ public class GenTableServiceImpl implements GenTableService {
 
     private final GenTableDao genTableDao;
     private final GenTableColumnDao genTableColumnDao;
+
+    public GenTableServiceImpl(GenTableDao genTableDao, GenTableColumnDao genTableColumnDao) {
+        this.genTableDao = genTableDao;
+        this.genTableColumnDao = genTableColumnDao;
+    }
 
     @Override
     public GenTable selectGenTableById(String id) {
@@ -102,6 +105,19 @@ public class GenTableServiceImpl implements GenTableService {
 
     @Override
     public boolean createTable(String sql) {
+        // 防御性校验：确保传入的 SQL 是合法的 CREATE TABLE 语句
+        // 虽然 Controller 层已通过 Druid SQL Parser 验证，但这里做二次校验以防绕过
+        if (sql == null || sql.isBlank()) {
+            throw new ServiceException("建表SQL不能为空");
+        }
+        String trimmedSql = sql.trim().toUpperCase();
+        if (!trimmedSql.startsWith("CREATE TABLE") && !trimmedSql.startsWith("CREATE  TABLE")) {
+            throw new ServiceException("仅允许执行 CREATE TABLE 语句");
+        }
+        // 禁止分号分隔的多语句
+        if (sql.contains(";") && sql.indexOf(";") < sql.length() - 1) {
+            throw new ServiceException("不允许执行多条SQL语句");
+        }
         return genTableDao.createTable(sql) == 0;
     }
 

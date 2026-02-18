@@ -12,7 +12,6 @@ import com.zjjh.fdtemp.dao.SysDictDataDao;
 import com.zjjh.fdtemp.dao.SysDictTypeDao;
 import com.zjjh.fdtemp.service.SysDictTypeService;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +26,15 @@ import java.util.stream.Collectors;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     private final SysDictTypeDao dictTypeMapper;
     private final SysDictDataDao dictDataMapper;
+
+    public SysDictTypeServiceImpl(SysDictTypeDao dictTypeMapper, SysDictDataDao dictDataMapper) {
+        this.dictTypeMapper = dictTypeMapper;
+        this.dictDataMapper = dictDataMapper;
+    }
 
     private static final String DICT_STATUS_NORMAL = "0";
 

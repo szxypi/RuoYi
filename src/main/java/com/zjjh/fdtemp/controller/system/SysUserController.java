@@ -154,7 +154,8 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     public AjaxResult remove(String ids) {
-        if (ArrayUtils.contains(Convert.toLongArray(ids), getUserId())) {
+        // 修复: 原代码使用 Convert.toLongArray 导致 UUID 类型 ID 无法正确比较
+        if (ArrayUtils.contains(Convert.toStrArray(ids), getUserId())) {
             return error("当前用户不能删除");
         }
         return toAjax(userService.deleteUserByIds(ids));

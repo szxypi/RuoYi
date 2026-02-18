@@ -1,5 +1,5 @@
 -- ============================================================
--- RuoYi 数据库规范迁移脚本
+-- fdtemp 数据库规范迁移脚本
 -- 1. 主键改造: bigint auto_increment -> varchar(32) UUID (32位小写无横线)
 -- 2. 公共字段替换: del_flag->YN, create_by->CREATE_USER等
 -- 3. 删除 sys_user_online 表

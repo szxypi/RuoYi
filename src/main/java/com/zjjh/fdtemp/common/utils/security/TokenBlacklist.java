@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -54,7 +55,6 @@ public class TokenBlacklist {
         }
         if (isDbModeEnabled()) {
             try {
-                cleanupExpired();
                 String tokenHash = hashToken(token);
                 Timestamp expiration = Timestamp.from(Instant.ofEpochMilli(expirationTime));
                 int updated = jdbcTemplate.update(
@@ -71,7 +71,6 @@ public class TokenBlacklist {
             }
         }
         inMemoryBlacklist.put(token, expirationTime);
-        cleanupExpired();
     }
 
     /**
@@ -83,7 +82,6 @@ public class TokenBlacklist {
         }
         if (isDbModeEnabled()) {
             try {
-                cleanupExpired();
                 String tokenHash = hashToken(token);
                 Integer count = jdbcTemplate.queryForObject(
                         "SELECT COUNT(1) FROM sys_token_blacklist WHERE token_hash = ? AND expiration_time > CURRENT_TIMESTAMP",
@@ -104,6 +102,15 @@ public class TokenBlacklist {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 定时清理过期的 token（每分钟执行一次）
+     * 替代原来每次请求都清理的方式，减少数据库写压力
+     */
+    @Scheduled(fixedRate = 60000)
+    public void scheduledCleanup() {
+        cleanupExpired();
     }
 
     /**

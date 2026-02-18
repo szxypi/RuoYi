@@ -1,6 +1,6 @@
 package com.zjjh.fdtemp.common.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.zjjh.fdtemp.beans.entity.GenTable;
 import com.zjjh.fdtemp.beans.entity.GenTableColumn;
 import com.zjjh.fdtemp.config.GenConfig;

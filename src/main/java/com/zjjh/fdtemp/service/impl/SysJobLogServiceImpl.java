@@ -4,7 +4,6 @@ import com.zjjh.fdtemp.beans.entity.SysJobLog;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.dao.SysJobLogDao;
 import com.zjjh.fdtemp.service.SysJobLogService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +14,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysJobLogServiceImpl implements SysJobLogService {
 
     private final SysJobLogDao jobLogMapper;
+
+    public SysJobLogServiceImpl(SysJobLogDao jobLogMapper) {
+        this.jobLogMapper = jobLogMapper;
+    }
 
     @Override
     public List<SysJobLog> selectJobLogList(SysJobLog jobLog) {

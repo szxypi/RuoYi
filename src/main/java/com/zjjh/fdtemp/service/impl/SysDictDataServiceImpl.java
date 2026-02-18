@@ -5,7 +5,6 @@ import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.common.utils.DictUtils;
 import com.zjjh.fdtemp.dao.SysDictDataDao;
 import com.zjjh.fdtemp.service.SysDictDataService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +15,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysDictDataServiceImpl implements SysDictDataService {
 
     private final SysDictDataDao dictDataMapper;
+
+    public SysDictDataServiceImpl(SysDictDataDao dictDataMapper) {
+        this.dictDataMapper = dictDataMapper;
+    }
 
     @Override
     public List<SysDictData> selectDictDataList(SysDictData dictData) {

@@ -4,7 +4,6 @@ import com.zjjh.fdtemp.beans.entity.GenTableColumn;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.dao.GenTableColumnDao;
 import com.zjjh.fdtemp.service.GenTableColumnService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +14,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class GenTableColumnServiceImpl implements GenTableColumnService {
 
     private final GenTableColumnDao genTableColumnDao;
+
+    public GenTableColumnServiceImpl(GenTableColumnDao genTableColumnDao) {
+        this.genTableColumnDao = genTableColumnDao;
+    }
 
     @Override
     public List<GenTableColumn> selectGenTableColumnListByTableId(GenTableColumn genTableColumn) {

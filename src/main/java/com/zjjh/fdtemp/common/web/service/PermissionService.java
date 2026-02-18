@@ -14,7 +14,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
 /**
- * RuoYi首创 js调用 thymeleaf 实现按钮权限可见性
+ * 权限校验服务，供接口层和模板层调用
  *
  * @author szx
  */

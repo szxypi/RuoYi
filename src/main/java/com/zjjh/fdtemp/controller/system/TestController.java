@@ -27,8 +27,8 @@ public class TestController extends BaseController {
     private final static Map<Integer, UserEntity> users = new LinkedHashMap<Integer, UserEntity>();
 
     {
-        users.put(1, new UserEntity(1, "admin", "admin123", "15888888888"));
-        users.put(2, new UserEntity(2, "ry", "admin123", "15666666666"));
+        users.put(1, new UserEntity(1, "admin", "******", "15888888888"));
+        users.put(2, new UserEntity(2, "ry", "******", "15666666666"));
     }
 
     @Operation(summary = "获取用户列表")

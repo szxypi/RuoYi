@@ -4,7 +4,6 @@ import com.zjjh.fdtemp.beans.entity.SysOperLog;
 import com.zjjh.fdtemp.common.core.text.Convert;
 import com.zjjh.fdtemp.dao.SysOperLogDao;
 import com.zjjh.fdtemp.service.SysOperLogService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +14,13 @@ import java.util.List;
  * @author szx
  */
 @Service
-@RequiredArgsConstructor
 public class SysOperLogServiceImpl implements SysOperLogService {
 
     private final SysOperLogDao operLogMapper;
+
+    public SysOperLogServiceImpl(SysOperLogDao operLogMapper) {
+        this.operLogMapper = operLogMapper;
+    }
 
     @Override
     public void insertOperlog(SysOperLog operLog) {

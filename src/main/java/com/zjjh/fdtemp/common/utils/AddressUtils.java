@@ -1,6 +1,6 @@
 package com.zjjh.fdtemp.common.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.zjjh.fdtemp.common.utils.http.HttpUtils;
 import com.zjjh.fdtemp.config.AppConfig;
 import com.zjjh.fdtemp.constants.Constants;

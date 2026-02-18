@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - HTTP 状态码始终为 200
  * - 业务状态通过 code 字段区分：0=成功，500=错误
  * <p>
- * API 路径规范（RuoYi风格）：
+ * API 路径规范：
  * - 列表查询: POST /xxx/list 或 GET /xxx/list
  * - 新增: POST /xxx/add
  * - 编辑: POST /xxx/edit

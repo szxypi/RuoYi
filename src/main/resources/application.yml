@@ -6,8 +6,8 @@ app:
   version: 1.0.0
   # 版权年份
   copyrightYear: 2026
-  # 文件路径 示例（ Windows配置D:/fdtemp/uploadPath，Linux配置 /home/fdtemp/uploadPath）
-  profile: D:/fdtemp/uploadPath
+  # 文件路径（默认当前目录下 upload 文件夹，可通过环境变量 APP_UPLOAD_PATH 覆盖）
+  profile: ${APP_UPLOAD_PATH:./upload}
   # 获取ip地址开关
   addressEnabled: false
 
@@ -25,9 +25,9 @@ server:
     accept-count: 1000
     threads:
       # tomcat最大线程数，默认为200
-      max: 800
+      max: 200
       # Tomcat启动初始化的线程数，默认值10
-      min-spare: 100
+      min-spare: 20
 
 # 日志配置
 logging:
@@ -82,8 +82,8 @@ pagehelper:
 
 # JWT配置
 jwt:
-  # JWT密钥（生产环境请更换为更安全的密钥）
-  secret: ${JWT_SECRET:defaultDevSecretKeyPleaseReplaceInProduction123456}
+  # JWT密钥（Base64编码，至少32字节；生产环境务必通过 JWT_SECRET 环境变量覆盖）
+  secret: ${JWT_SECRET:WTmEFR+C4oGYuTMATXaEARBt1kBKHS8d+H1ipnLe7UdxpA/xKNgeeaHLBv6HsKLI}
   # token有效期（毫秒），默认24小时
   expiration: 86400000
   # refresh token有效期（毫秒），默认7天

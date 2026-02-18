@@ -64,10 +64,18 @@ public class GlobalExceptionHandler {
         return AjaxResult.error("系统异常，请联系管理员");
     }
 
+    /**
+     * 业务异常处理
+     * 对异常消息进行 HTML 转义，防止返回值中包含用户可控内容导致 XSS
+     */
     @ExceptionHandler(ServiceException.class)
     public AjaxResult handleServiceException(ServiceException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
-        return AjaxResult.error(e.getMessage());
+        String message = e.getMessage();
+        if (StringUtils.isNotEmpty(message)) {
+            message = EscapeUtil.clean(message);
+        }
+        return AjaxResult.error(message);
     }
 
     @ExceptionHandler(MissingPathVariableException.class)
@@ -77,6 +85,10 @@ public class GlobalExceptionHandler {
         return AjaxResult.error(String.format("请求路径中缺少必需的路径变量[%s]", e.getVariableName()));
     }
 
+    /**
+     * 请求参数类型不匹配
+     * 修复：对 getRequiredType() 空指针保护
+     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public AjaxResult handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e,
                                                                 HttpServletRequest request) {
@@ -85,8 +97,9 @@ public class GlobalExceptionHandler {
         if (StringUtils.isNotEmpty(value)) {
             value = EscapeUtil.clean(value);
         }
+        String requiredTypeName = e.getRequiredType() != null ? e.getRequiredType().getName() : "未知";
         log.error("请求参数类型不匹配'{}',发生系统异常.", requestURI, e);
-        return AjaxResult.error(String.format("请求参数类型不匹配，参数[%s]要求类型为：'%s'，但输入值为：'%s'", e.getName(), e.getRequiredType().getName(), value));
+        return AjaxResult.error(String.format("请求参数类型不匹配，参数[%s]要求类型为：'%s'，但输入值为：'%s'", e.getName(), requiredTypeName, value));
     }
 
     @ExceptionHandler(BindException.class)
